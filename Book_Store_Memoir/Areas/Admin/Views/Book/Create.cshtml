@@ -1,0 +1,101 @@
+﻿@model Book_Store_Memoir.Models.Book
+
+@{
+    ViewData["Title"] = "Create";
+}
+<form asp-controller="Book" asp-action="Create" method="post" enctype="multipart/form-data">
+    <div class="page-header no-gutters has-tab">
+        <div class="d-md-flex m-b-15 align-items-center justify-content-between">
+            <div class="media align-items-center m-b-15">
+                <div class="m-l-15">
+                    <h4 class="m-b-0">Thêm sản phẩm</h4>
+                </div>
+            </div>
+            <div class="m-b-15">
+                <button class="btn btn-primary">
+                    <i class="anticon anticon-save"></i>
+                    <span>Thêm</span>
+                </button>
+            </div>
+        </div>
+
+    </div>
+    <div class="tab-content m-t-15">
+        <div class="tab-pane fade show active" id="product-edit-basic">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-group">
+                        <label class="font-weight-semibold" for="productName">Tiêu đề</label>
+                        <input asp-for="Title" class="form-control" />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="font-weight-semibold" for="productName">Mô tả</label>
+                        <input asp-for="Description" class=" form-control" />
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="font-weight-semibold" for="productName">ISBN</label>
+                        <input asp-for="ISBN" class="form-control" />
+                        <span asp-validation-for="ISBN" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="font-weight-semibold" for="productName">Số trang</label>
+                        <input asp-for="PageNumber" class=" form-control" />
+                        <span asp-validation-for="PageNumber" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="font-weight-semibold" for="productName">Giá</label>
+                        <input asp-for="Price" class="form-control" />
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+                    <div class="form-group ">
+                        <label class="font-weight-semibold" for="productBrand">Hình ảnh</label>
+                        <input name="file" type="file" class="form-control-file" asp-for="Image" enctype="multipart/form-data" multiple accept=".jpg, .jpeg, .png, .gif">
+                        <span asp-validation-for="Image" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="font-weight-semibold" for="productCategory">Thể loại</label>
+                        <select class="custom-select" asp-for="Category_Id" style="min-width: 200px;" asp-items="ViewBag.DSTL">
+                            <option value="" disable selected> Chọn thể loại sách</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="font-weight-semibold" for="productCategory">Nhà xuất bản</label>
+                        <select class="custom-select" asp-for="PublisherId" style="min-width: 200px;" asp-items="ViewBag.DSNXB">
+                            <option value="" disable selected> Chọn nhà xuất bản</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="font-weight-semibold" for="productCategory">Ngôn ngữ</label>
+                        <select class="custom-select" asp-for="LanguageId" style="min-width: 200px;" asp-items="ViewBag.DSNN">
+                            <option value="" disable selected> Chọn ngôn ngữ</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="font-weight-semibold" for="productCategory">Tác giả</label>
+                        <div class="custom-select" style="min-width: 200px;">
+                            @foreach (var item in ViewBag.DSTG)
+                            {
+                                <label>
+                                    <input type="checkbox" name="Language_Id" value="@item.Value" /> @item.Text
+                                </label>
+                                <br />
+                            }
+                        </div>
+                    </div>
+
+
+                    @*   <div class="form-group">
+                    <label class="font-weight-semibold" for="productName">Giá</label>
+                    <input type="number" min="0" class="form-control" asp-for="Price">
+                    </div>*@
+                    <div class="form-group">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
