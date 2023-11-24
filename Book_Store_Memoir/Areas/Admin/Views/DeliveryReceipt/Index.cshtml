@@ -1,0 +1,79 @@
+﻿@model IEnumerable<Book_Store_Memoir.Models.Models.DeliveryReceipt>
+
+@{
+    ViewData["Title"] = "Index";
+
+}
+<div class="form-group">
+
+    @*<form method="post" id="myForm">
+    <label>Chọn trạng thái đơn hàng</label>
+    <select class="form-control" id="statusID" name="statusID" asp-items="@ViewBag.DSTT" required onchange="submitForm()">
+    <option value="0" disabled selected>Chọn trạng thái đơn hàng</option>
+    </select>
+    </form>*@
+
+    @*   <form method="get">
+    <label for="brand-select">Choose a brand:</label>
+    <select id="statusID" name="statusID" asp-items="ViewBag.DSTT">
+    <option value="" disable selected>Chọn trạng thái đơn hàng</option>
+    </select>
+    <button type="submit">Filter</button>
+    </form>*@
+</div>
+<table class="table" id="list-order">
+    <thead>
+        <tr>
+            <th>
+                Mã Đơn Đặt Hàng
+            </th>
+            <th>
+                Tên Người Mua
+            </th>
+            <th>
+                Ngày Mua
+            </th>
+            <th>
+                TổngTiền
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Orders.Customers.Name)
+                </td>
+                <td>
+                    @item.Orders.OrderDate
+                </td>
+
+                <td>
+                    @item.Orders.TotalAmount.Value.ToString("#,##0") VNĐ
+                </td>
+                <td>
+                    <a class="btn btn-primary btn-tone m-r-5" asp-area="Admin" asp-controller="DeliveryReceipt" asp-action="Detail" asp-route-id="@item.Id" asp-route-idOrders="@item.Orders.Id">View</a>
+                    @*                    <a class="btn btn-secondary btn-tone m-r-5" asp-area="Admin" asp-controller="Order" asp-action="ChangeStatus" asp-route-id="@item.Id">Chỉnh sửa trạng thái</a>
+                *@
+                </td>
+                <td>
+                </td>
+
+
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+
+<script>
+    function submitForm() {
+        document.getElementById("myForm").submit();
+    }
+</script>

@@ -20,6 +20,11 @@ namespace Book_Store_Memoir.Data
         public DbSet<Admin> Admins { get; set; }
         public DbSet<Customers> Customers { get; set; }
         public DbSet<Orders> Orders { get; set; }
+        public DbSet<OrderDetails> OrderDetails { get; set; }
+        public DbSet<Shipper> Shipper { get; set; }
+        public DbSet<OrderStatus> OrderStatus { get; set; }
+        public DbSet<DeliveryReceipt> DeliveryReceipts { get; set; }
+        public DbSet<ReceiptDetails> ReceiptDetails { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<BookAuthor>()
@@ -34,6 +39,34 @@ namespace Book_Store_Memoir.Data
                 .HasOne(ba => ba.Author)
                 .WithMany(a => a.BookAuthors)
                 .HasForeignKey(ba => ba.AuthorId);
+            modelBuilder.Entity<Orders>()
+               .HasOne(ba => ba.OrderStatus)
+               .WithMany(a => a.Orders)
+               .HasForeignKey(ba => ba.OrderStatusId);
+            modelBuilder.Entity<Orders>()
+              .HasOne(ba => ba.Shipper)
+              .WithMany(a => a.Orders)
+              .HasForeignKey(ba => ba.ShipperId);
+            modelBuilder.Entity<DeliveryReceipt>()
+                 .HasOne(ba => ba.Orders)
+                 .WithMany(a => a.DeliveryReceipts)
+                 .HasForeignKey(ba => ba.OrderId);
+            modelBuilder.Entity<DeliveryReceipt>()
+                .HasOne(ba => ba.Shipper)
+                .WithMany(a => a.DeliveryReceipts)
+                .HasForeignKey(ba => ba.ShipperId);
+            modelBuilder.Entity<ReceiptDetails>()
+            .HasKey(dr => new { dr.DeliveryReceiptId, dr.BookId });
+
+            modelBuilder.Entity<ReceiptDetails>()
+                .HasOne(dr => dr.Book)
+                .WithMany(d => d.ReceiptDetails)
+                .HasForeignKey(dr => dr.BookId);
+
+            modelBuilder.Entity<ReceiptDetails>()
+                .HasOne(dr => dr.DeliveryReceipt)
+                .WithMany(b => b.ReceiptDetails)
+                .HasForeignKey(dr => dr.DeliveryReceiptId);
         }
     }
 }

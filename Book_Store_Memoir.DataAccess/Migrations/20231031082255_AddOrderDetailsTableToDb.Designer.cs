@@ -4,6 +4,7 @@ using Book_Store_Memoir.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Book_Store_Memoir.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231031082255_AddOrderDetailsTableToDb")]
+    partial class AddOrderDetailsTableToDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -195,39 +198,6 @@ namespace Book_Store_Memoir.Migrations
                     b.ToTable("Customers");
                 });
 
-            modelBuilder.Entity("Book_Store_Memoir.Models.Models.DeliveryReceipt", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DeliveryDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Note")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ShipperId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderId");
-
-                    b.HasIndex("ShipperId");
-
-                    b.ToTable("DeliveryReceipts");
-                });
-
             modelBuilder.Entity("Book_Store_Memoir.Models.Models.OrderDetails", b =>
                 {
                     b.Property<int>("Id")
@@ -236,16 +206,22 @@ namespace Book_Store_Memoir.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("BookId")
+                    b.Property<int>("BookId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("OrdersId")
+                    b.Property<int>("Book_Id")
                         .HasColumnType("int");
 
-                    b.Property<int?>("Quantity")
+                    b.Property<int>("Order_Id")
                         .HasColumnType("int");
 
-                    b.Property<double?>("TotalAmount")
+                    b.Property<int>("OrdersId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<double>("TotalAmount")
                         .HasColumnType("float");
 
                     b.HasKey("Id");
@@ -257,23 +233,6 @@ namespace Book_Store_Memoir.Migrations
                     b.ToTable("OrderDetails");
                 });
 
-            modelBuilder.Entity("Book_Store_Memoir.Models.Models.OrderStatus", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("OrderStatus");
-                });
-
             modelBuilder.Entity("Book_Store_Memoir.Models.Models.Orders", b =>
                 {
                     b.Property<int>("Id")
@@ -282,83 +241,25 @@ namespace Book_Store_Memoir.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("BookId")
+                    b.Property<int>("BookId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CustomerId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("CustomersCustomerId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("OrderDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("OrderStatusId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("PhoneNumber")
+                    b.Property<string>("CustomerId")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<string>("RecieverName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("ShipperId")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
-
-                    b.Property<double?>("TotalAmount")
-                        .HasColumnType("float");
 
                     b.HasKey("Id");
 
                     b.HasIndex("BookId");
 
-                    b.HasIndex("CustomersCustomerId");
-
-                    b.HasIndex("OrderStatusId");
-
-                    b.HasIndex("ShipperId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Orders");
-                });
-
-            modelBuilder.Entity("Book_Store_Memoir.Models.Models.Shipper", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Adress")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("BirthDay")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CCCD")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ImageAvt")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Shipper");
                 });
 
             modelBuilder.Entity("Book_Store_Memoir.Models.Publisher", b =>
@@ -418,34 +319,19 @@ namespace Book_Store_Memoir.Migrations
                     b.Navigation("Book");
                 });
 
-            modelBuilder.Entity("Book_Store_Memoir.Models.Models.DeliveryReceipt", b =>
-                {
-                    b.HasOne("Book_Store_Memoir.Models.Models.Orders", "Orders")
-                        .WithMany("DeliveryReceipts")
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Book_Store_Memoir.Models.Models.Shipper", "Shipper")
-                        .WithMany("DeliveryReceipts")
-                        .HasForeignKey("ShipperId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Orders");
-
-                    b.Navigation("Shipper");
-                });
-
             modelBuilder.Entity("Book_Store_Memoir.Models.Models.OrderDetails", b =>
                 {
                     b.HasOne("Book_Store_Memoir.Models.Book", "Book")
                         .WithMany()
-                        .HasForeignKey("BookId");
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Book_Store_Memoir.Models.Models.Orders", "Orders")
                         .WithMany()
-                        .HasForeignKey("OrdersId");
+                        .HasForeignKey("OrdersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Book");
 
@@ -456,27 +342,19 @@ namespace Book_Store_Memoir.Migrations
                 {
                     b.HasOne("Book_Store_Memoir.Models.Book", "Book")
                         .WithMany()
-                        .HasForeignKey("BookId");
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Book_Store_Memoir.Models.Models.Customers", "Customers")
                         .WithMany()
-                        .HasForeignKey("CustomersCustomerId");
-
-                    b.HasOne("Book_Store_Memoir.Models.Models.OrderStatus", "OrderStatus")
-                        .WithMany("Orders")
-                        .HasForeignKey("OrderStatusId");
-
-                    b.HasOne("Book_Store_Memoir.Models.Models.Shipper", "Shipper")
-                        .WithMany("Orders")
-                        .HasForeignKey("ShipperId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Book");
 
                     b.Navigation("Customers");
-
-                    b.Navigation("OrderStatus");
-
-                    b.Navigation("Shipper");
                 });
 
             modelBuilder.Entity("Book_Store_Memoir.Models.Author", b =>
@@ -487,23 +365,6 @@ namespace Book_Store_Memoir.Migrations
             modelBuilder.Entity("Book_Store_Memoir.Models.Book", b =>
                 {
                     b.Navigation("BookAuthors");
-                });
-
-            modelBuilder.Entity("Book_Store_Memoir.Models.Models.OrderStatus", b =>
-                {
-                    b.Navigation("Orders");
-                });
-
-            modelBuilder.Entity("Book_Store_Memoir.Models.Models.Orders", b =>
-                {
-                    b.Navigation("DeliveryReceipts");
-                });
-
-            modelBuilder.Entity("Book_Store_Memoir.Models.Models.Shipper", b =>
-                {
-                    b.Navigation("DeliveryReceipts");
-
-                    b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618
         }

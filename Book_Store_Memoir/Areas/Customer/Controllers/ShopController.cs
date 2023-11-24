@@ -3,6 +3,7 @@ using Book_Store_Memoir.Models;
 using Book_Store_Memoir.Models.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using System.Web;
 
 namespace Book_Store_Memoir.Areas.Customer.Controllers
@@ -74,8 +75,15 @@ namespace Book_Store_Memoir.Areas.Customer.Controllers
             }
 
 
-            gh.CartItems.First().OrderTotal = (double)totalAmount;
-            // Lưu tổng tiền vào giỏ hàng
+            if (gh.CartItems.Any())
+            {
+                gh.CartItems.First().OrderTotal = (double)totalAmount;
+            }
+            else
+            {
+                // Giỏ hàng rỗng, bạn có thể xử lý tại đây, ví dụ: gán OrderTotal thành 0
+                return View("CartEmpty");
+            }
 
             MySessions.Set(HttpContext.Session, "GioHang", gh);
             return View(gh);
@@ -84,7 +92,6 @@ namespace Book_Store_Memoir.Areas.Customer.Controllers
 
         public IActionResult Plus(int cartId)
         {
-            
             Orders gh = MySessions.Get<Orders>(HttpContext.Session, "GioHang");
 
             if (gh != null)
@@ -178,36 +185,50 @@ namespace Book_Store_Memoir.Areas.Customer.Controllers
             }
                
         }
-        
-        public IActionResult CreateOrder(Orders orders)
+        [HttpPost]
+        public IActionResult CreateOrder(Orders orders, string Cusname, string Address, string Phone)
         {
             // Lấy thông tin người dùng từ phiên
             var user = HttpContext.Session.GetObject<Customers>("User");
 
-            // Kiểm tra xem người dùng đã đăng nhập hay chưa
-            if (user == null)
-            {
-                // Người dùng chưa đăng nhập, chuyển hướng hoặc xử lý theo cách khác
-                return RedirectToAction("Login", "Account");
-            }
-
             // Lấy thông tin giỏ hàng từ phiên (nếu bạn lưu thông tin giỏ hàng trong phiên)
             var shoppingCart = MySessions.Get<Orders>(HttpContext.Session, "GioHang");
             
-            if (shoppingCart == null)
+            if (user!=null && shoppingCart!=null)
             {
-                // Giỏ hàng trống, xử lý theo cách khác hoặc hiển thị thông báo
-                return RedirectToAction("EmptyCart");
+                var order = new Orders
+                {
+                    CustomerId = user.CustomerId,
+                    CustomersCustomerId = user.CustomerId,
+                    BookId = shoppingCart.CartItems.First().Book.Id,
+                    Quantity = shoppingCart.Quantity,
+                    TotalAmount = shoppingCart.CartItems.First().OrderTotal,
+                    OrderStatusId =1,
+                    RecieverName = Cusname,
+                    Address = Address,
+                    PhoneNumber = Phone,
+                    OrderDate = DateTime.Now,
+
+                };
+                _db.Orders.Add(order);
+                _db.SaveChanges();
+                foreach(var cartItem in shoppingCart.CartItems)
+                {
+                        var orderItem = new OrderDetails
+                    {
+                        OrdersId = order.Id,
+                        BookId = cartItem.Book.Id,
+                        Quantity = cartItem.Quantity,
+                        TotalAmount = order.TotalAmount,
+
+                        };
+                    _db.OrderDetails.Add(orderItem);
+
+                }
+                _db.SaveChanges();
             }
 
-            // Tiến hành tạo đơn hàng và lưu vào cơ sở dữ liệu
-            // ...
-            foreach(ShoppingCartVM a in shoppingCart.CartItems)
-            {
-                ShoppingCartVM dh = new ShoppingCartVM();
-                
-            }    
-                
+           
 
             // Xóa thông tin giỏ hàng từ phiên sau khi đã tạo đơn hàng
             HttpContext.Session.Remove("GioHang");

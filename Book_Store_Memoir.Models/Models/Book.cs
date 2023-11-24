@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Book_Store_Memoir.Models.Models;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Book_Store_Memoir.Models
 {
@@ -22,5 +23,6 @@ namespace Book_Store_Memoir.Models
         public virtual Publisher? Publisher { get; set; }
         public virtual Language? Language { get; set; }
         public ICollection<BookAuthor>? BookAuthors { get; set; }
+        public ICollection<ReceiptDetails>? ReceiptDetails { get; set; }
     }
 }

@@ -1,12 +1,14 @@
 ﻿using Book_Store_Memoir.Data;
 using Book_Store_Memoir.DataAccess.Reponsitory;
 using Book_Store_Memoir.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace Book_Store_Memoir.Areas.Admin.Controllers
 {
+    [Authorize]
     [Area("Admin")]
     public class BookController : Controller
     {

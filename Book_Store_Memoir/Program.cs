@@ -1,5 +1,6 @@
 ﻿using Book_Store_Memoir.Data;
 using Book_Store_Memoir.DataAccess.Reponsitory;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +20,12 @@ builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromMinutes(30); // Đặt thời gian sống phiên 30 phút
 });
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Admin/Account/Login"; // Đường dẫn trang đăng nhập
+        options.AccessDeniedPath = "/Admin/Account/AccessDenied"; // Đường dẫn trang bị từ chối truy cập
+    });
 
 var app = builder.Build();
 
