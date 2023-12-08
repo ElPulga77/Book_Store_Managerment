@@ -55,7 +55,7 @@ namespace Book_Store_Memoir.Data
                 .HasOne(ba => ba.Shipper)
                 .WithMany(a => a.DeliveryReceipts)
                 .HasForeignKey(ba => ba.ShipperId);
-            modelBuilder.Entity<ReceiptDetails>()
+            /*modelBuilder.Entity<ReceiptDetails>()
             .HasKey(dr => new { dr.DeliveryReceiptId, dr.BookId });
 
             modelBuilder.Entity<ReceiptDetails>()
@@ -66,7 +66,7 @@ namespace Book_Store_Memoir.Data
             modelBuilder.Entity<ReceiptDetails>()
                 .HasOne(dr => dr.DeliveryReceipt)
                 .WithMany(b => b.ReceiptDetails)
-                .HasForeignKey(dr => dr.DeliveryReceiptId);
+                .HasForeignKey(dr => dr.DeliveryReceiptId);*/
         }
     }
 }

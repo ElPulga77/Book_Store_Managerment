@@ -1,0 +1,61 @@
+﻿@model Book_Store_Memoir.Models.Book
+
+@{
+    ViewData["Title"] = "Details";
+
+}
+
+<div class="card-body">
+    <h4 class="card-title">Thông tin sản phẩm: @Model.Title</h4>
+    <div class="table-responsive">
+        <table class="product-info-table m-t-20">
+            <tbody>
+                <tr>
+                    <td>ID:</td>
+                    <td class="text-dark font-weight-semibold">@Model.Id</td>
+                </tr>
+                <tr>
+                    <td>Tên sản phẩm:</td>
+                    <td>@Model.Title</td>
+                </tr>
+                <tr>
+                    <td>Thể loại:</td>
+                    <td>@Model.Category.Name</td>
+                </tr>
+                <tr>
+                    <td>Ngày xuất bản:</td>
+                    <td>@Model.Publication_Date</td>
+                </tr>
+                <tr>
+                    <td>Ngôn ngữ:</td>
+                    <td>@Model.Language.Language_Name</td>
+                </tr>
+                <tr>
+                    <td>Nhà xuất bản:</td>
+                    <td>@Model.Publisher.Name</td>
+                </tr>
+                <tr>
+                    <td>Tác giả:</td>
+                    @*<td>@Model.BookAuthors.First().Author.NameAuhor</td>*@
+                </tr>
+                <tr>
+                    <td>Giá:</td>
+                    <td>@Model.Price.Value.ToString("#,##0") VNĐ</td>
+                </tr>
+                <tr>
+                    <td>Hình ảnh:</td>
+                    <td>
+                        <img width="200" height="200" src="~/image/sanpham/@Model.Image" />
+                    </td>
+                </tr>
+                
+            </tbody>
+           
+        </table>
+        <td>
+            <a class="btn btn-secondary btn-tone m-r-5" asp-area="Admin" asp-controller="Book" asp-action="Edit" asp-route-id="">Edit</a>
+            <a class="btn btn-success btn-tone m-r-5" asp-area="Admin" asp-controller="Book" asp-action="Delete" asp-route-id="@Model.Id">Delete</a>
+        </td>
+    </div>
+</div>
+

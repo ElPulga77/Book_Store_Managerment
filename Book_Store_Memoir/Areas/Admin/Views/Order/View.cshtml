@@ -102,18 +102,7 @@
                         <form asp-action="Createdelivery" method="post">
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                             <input type="hidden" asp-for="Id" />
-                            <div class="row">
-                                <div class="col-md-12">
-                                   @* <div class="form-group">
-                                        <label>Chọn người giao hàng</label>
-                                        <select class="custom-select" asp-for="ShipperId" style="min-width: 200px;" asp-items="ViewBag.DSSP">
-                                            <option value="" selected disabled> Chọn người giao hàng</option>
-                                        </select>
-                                    </div>*@
-                                </div>
-
-
-                            </div>
+                    
                             <button type="submit" class="btn btn-success">Tạo đơn đặt hàng</button>
                         </form>
                     </div>

@@ -287,7 +287,9 @@
 
     <script src="~/assets_admin/js/pages/dashboard-default.js"></script>
     <!-- Core JS -->
-    @RenderSection("Scripts", required: false)
+    @await Component.InvokeAsync("Notyf")
+ 
+    @await RenderSectionAsync("Scripts", required: false)
     <script src="~/assets_admin/js/app.min.js"></script>
 </body>
 

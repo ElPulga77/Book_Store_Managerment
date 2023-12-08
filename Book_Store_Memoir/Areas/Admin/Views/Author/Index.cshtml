@@ -1,0 +1,73 @@
+﻿@model IEnumerable<Book_Store_Memoir.Models.Author>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+
+<div class="page-header">
+
+    <div class="header-sub-title">
+        <nav class="breadcrumb breadcrumb-dash">
+            <a asp-area="Admin" asp-controller="" asp-action="Index" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Home</a>
+            <span class="breadcrumb-item active">Danh sách tác giả: </span>
+        </nav>
+    </div>
+</div>
+
+<div class="row m-b-30">
+    <div class="col-lg-8">
+        <div class="d-md-flex">
+            <div class="m-b-10 m-r-15">
+            </div>
+
+        </div>
+    </div>
+    <div class="col-lg-4 text-right">
+        <a class="btn btn-primary" asp-controller="Author" asp-action="Add">
+            <i class="anticon anticon-plus-circle m-r-5"></i>
+            <span>Thêm mới tác giả</span>
+        </a>
+
+    </div>
+</div>
+
+<table class="table table-hover e-commerce-table">
+    <thead>
+        <tr>
+            <th>Image</th>
+            <th>Họ và Tên</th>
+            <th>Ngày Sinh</th>
+            <th>Ngày Mất</th>
+            <th>Quê Quán</th>
+
+
+
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null)
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td><img width="50" height="50" src="~/image/tacgia/@item.Image" /></td>
+                    <td>@item.NameAuhor</td>
+                    <td>@item.Birthday?.ToString("dd/MM/yyyy")</td>
+                    <td>@item.Death?.ToString("dd/MM/yyyy")</td>
+                    <td>@item.Hometown</td>
+
+
+                    <td>
+                        <a class="btn btn-primary btn-tone m-r-5" asp-area="Admin" asp-controller="Author" asp-action="Details" asp-route-id="@item.Id">View</a>
+                        <a class="btn btn-secondary btn-tone m-r-5" asp-area="Admin" asp-controller="Author" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                        <a class="btn btn-success btn-tone m-r-5" asp-area="Admin" asp-controller="Author" asp-action="DeleteBook" asp-route-id="@item.Id">Delete</a>
+                    </td>
+
+                </tr>
+            }
+        }
+
+    </tbody>
+</table>
+

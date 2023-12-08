@@ -23,12 +23,6 @@ namespace Book_Store_Memoir.Areas.Admin.Controllers
         {   
             ViewBag.DSSP = new SelectList(_db.Shipper.ToList(), "Id", "Name");
             var receipt = _db.DeliveryReceipts.Include(p=>p.Orders).ThenInclude(pa=>pa.Customers).Include(p=>p.Shipper).FirstOrDefault(m=>m.Id == id);
-
-            /*var Chitietdonhang = _db.DeliveryReceipts
-                .Include(p => p.Orders)
-                .ThenInclude(pa => pa.OrderDetails)
-                .ThenInclude(pa => pa.Book).Where(p => p.OrderId == p.Orders.Id)
-                .OrderBy(x => x.Id);*/
             var Chitietdonhang = _db.OrderDetails
                .Include(x => x.Book)
                .Where(x => x.OrdersId == idOrders)
@@ -36,35 +30,80 @@ namespace Book_Store_Memoir.Areas.Admin.Controllers
             ViewBag.ChiTiet = Chitietdonhang.ToList();
             return View(receipt);
         }
-
-        public async Task<IActionResult> Details(int? id)
+        [HttpPost]
+        public IActionResult CreateReceipt(ReceiptDetails receipt, int idOrders, int idDeli, int ShipperID)
         {
-            ViewBag.DSSP = new SelectList(_db.Shipper.ToList(), "Id", "Name");
-            if (id == null)
+            var items = _db.DeliveryReceipts.Find(idDeli);
+            items.ShipperId = ShipperID;
+            _db.Update(items);
+            _db.SaveChanges();
+            var Chitietdonhang = _db.OrderDetails
+               .Include(x => x.Book)
+               .Where(x => x.OrdersId == idOrders)
+               .OrderBy(x => x.Id);
+            foreach (var rece in Chitietdonhang)
+            {
+                var donhang = new ReceiptDetails
+                {
+                    BookId = rece.BookId,
+                    DeliveryReceiptId = idDeli,
+                    Quantity = rece.Quantity,
+                    TotalAmount = rece.TotalAmount,
+                };
+                _db.ReceiptDetails.Add(donhang);
+                _db.SaveChanges();
+                
+            }    
+                return RedirectToAction("Index");
+        }
+        public IActionResult ListReceipt()
+        {
+            var receipt = _db.ReceiptDetails.Include(x => x.Book).Include(x=>x.DeliveryReceipt).ThenInclude(x => x.Shipper).ThenInclude(p=>p.Orders).ToList();  
+            return View();
+        }
+        public IActionResult EditReceipt(int id)
+        {
+
+            var receipt = _db.DeliveryReceipts.Include(p => p.Orders)
+                .ThenInclude(o=>o.Customers)
+                        .ThenInclude(o=>o.Orders).ThenInclude(e=>e.OrderStatus)
+                .Include(p => p.Shipper)
+                .FirstOrDefault(m => m.Id == id);
+            if (receipt == null)
             {
                 return NotFound();
             }
 
-            var order = await _db.Orders
-                .Include(o => o.Customers).Include(o => o.OrderStatus)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (order == null)
-            {
-                return NotFound();
-            }
-            var Chitietdonhang1 = _db.DeliveryReceipts
-                .Include(p => p.Orders)
-                .ThenInclude(pa => pa.OrderDetails)
-                .ThenInclude(pa => pa.Book).Where(p => p.OrderId == p.Orders.Id)
-                .OrderBy(x => x.Id).ToList();
-            
-            var Chitietdonhang = _db.OrderDetails
+            var Chitietdonhang = _db.ReceiptDetails
                 .Include(x => x.Book)
-                .Where(x => x.OrdersId == id)
+                .Where(x => x.DeliveryReceiptId == id)
                 .OrderBy(x => x.Id);
             ViewBag.ChiTiet = Chitietdonhang.ToList();
 
-            return View(order);
+            return View(receipt);
+        }
+        public IActionResult Minus(int receiptDetailsId, int id)
+        {
+            var orderDetail = _db.ReceiptDetails.Find(receiptDetailsId);
+            if (orderDetail != null)
+            {
+                if (orderDetail.Quantity > 1)
+                {
+                    orderDetail.Quantity--;
+                    _db.SaveChanges();
+                }
+            }
+            return RedirectToAction("EditReceipt", new { id });
+        }
+        public IActionResult Plus(int receiptDetailsId, int id)
+        {
+            var orderDetail = _db.ReceiptDetails.Find(receiptDetailsId);
+            if (orderDetail != null)
+            {
+                orderDetail.Quantity++;
+                _db.SaveChanges();
+            }
+            return RedirectToAction("EditReceipt", new { id });
         }
     }
 }

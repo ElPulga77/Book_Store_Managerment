@@ -1,4 +1,5 @@
-﻿using Book_Store_Memoir.Data;
+﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using Book_Store_Memoir.Data;
 using Book_Store_Memoir.DataAccess.Reponsitory;
 using Book_Store_Memoir.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -10,10 +11,12 @@ namespace Book_Store_Memoir.Areas.Admin.Controllers
     {
         private readonly ApplicationDbContext _db;
         private readonly CategoryReponsitory _categoryRepository;
-        public CategoryController(ApplicationDbContext db, CategoryReponsitory categoryReponsitory)
+        public INotyfService _notyfService { get; }
+        public CategoryController(ApplicationDbContext db, CategoryReponsitory categoryReponsitory, INotyfService notyfService)
         {
             _db = db;
             _categoryRepository = categoryReponsitory;
+            _notyfService = notyfService;   
         }
 
         public IActionResult Index()
@@ -30,15 +33,18 @@ namespace Book_Store_Memoir.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                _categoryRepository.AddCate(category);
+                _db.Categories.Add(category);
+                _db.SaveChanges();
+                /*_categoryRepository.AddCate(category);*/
+                _notyfService.Success("Thêm thành công!!");
                 return RedirectToAction("Index");
             }
             return View();
         }
-        public IActionResult Delete()
+    /*    public IActionResult Delete()
         {
             return View();
-        }
+        }*/
         [HttpPost]
         public IActionResult Delete(int id)
         {

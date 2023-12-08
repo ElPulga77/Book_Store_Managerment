@@ -1,4 +1,5 @@
-﻿using Book_Store_Memoir.Data;
+﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using Book_Store_Memoir.Data;
 using Book_Store_Memoir.Models;
 using Book_Store_Memoir.Models.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -13,17 +14,32 @@ namespace Book_Store_Memoir.Areas.Customer.Controllers
     {
 
         private readonly ApplicationDbContext _db;
-
-        public ShopController(ApplicationDbContext db)
+        public INotyfService _notyfService { get; }
+        public ShopController(ApplicationDbContext db, INotyfService notyfService)
         {
             _db = db;
+            _notyfService = notyfService;   
         }
-        public IActionResult Index()
+        public IActionResult Index(string Search, int page=1)
         {
+            int pageSize = 9;
             string userName = HttpContext.Session.GetString("UserName");
             ViewBag.UserName = userName;
-            var dsSanPham = _db.Books.Include(p => p.Category).Include(p => p.Publisher).Include(p => p.Language).Include(p => p.BookAuthors).ThenInclude(ba => ba.Author);
-            return View(dsSanPham.ToList());
+            var dsSanPham = _db.Books.Include(p => p.Category).Include(p => p.Publisher).Include(p => p.Language).Include(p => p.BookAuthors).ThenInclude(ba => ba.Author).ToList();
+            int totalBook = dsSanPham.Count();
+            // Tính số trang cần hiển thị
+            int totalPages = (int)Math.Ceiling((double)totalBook / pageSize);
+            // Lấy danh sách sản phẩm cho trang hiện tại
+            var productsForPage = dsSanPham.Skip((page - 1) * pageSize).Take(pageSize);
+            // Truyền số trang, danh sách sản phẩm và tổng số trang vào view
+            ViewData["CurrentPage"] = page;
+            ViewData["TotalPages"] = totalPages;
+            if (!string.IsNullOrEmpty(Search) )
+            {
+                productsForPage = _db.Books.AsNoTracking()
+                                   .Where(x =>  x.Title.Contains(Search));
+            }
+            return View(productsForPage);
         }
         public IActionResult Details(int id)
         {
@@ -86,6 +102,7 @@ namespace Book_Store_Memoir.Areas.Customer.Controllers
             }
 
             MySessions.Set(HttpContext.Session, "GioHang", gh);
+            _notyfService.Success("Đã thêm sản phẩm vào giỏ hàng!!");
             return View(gh);
         }
 

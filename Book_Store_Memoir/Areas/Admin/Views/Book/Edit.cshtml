@@ -3,18 +3,18 @@
 @{
     ViewData["Title"] = "Create";
 }
-<form asp-controller="Book" asp-action="Create" method="post" enctype="multipart/form-data">
+<form asp-controller="Book" asp-action="Edit" method="post" enctype="multipart/form-data">
     <div class="page-header no-gutters has-tab">
         <div class="d-md-flex m-b-15 align-items-center justify-content-between">
             <div class="media align-items-center m-b-15">
                 <div class="m-l-15">
-                    <h4 class="m-b-0">Thêm sản phẩm</h4>
+                    <h4 class="m-b-0">Chỉnh sửa thông tin sản phẩm</h4>
                 </div>
             </div>
             <div class="m-b-15">
                 <button class="btn btn-primary">
                     <i class="anticon anticon-save"></i>
-                    <span>Thêm</span>
+                    <span>Sửa</span>
                 </button>
             </div>
         </div>
@@ -25,7 +25,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="form-group">
-                        <label class="font-weight-semibold" for="productName">Tiêu đề</label>
+                        <label as class="font-weight-semibold" for="productName">Tiêu đề</label>
                         <input asp-for="Title" class="form-control" />
                         <span asp-validation-for="Title" class="text-danger"></span>
                     </div>
@@ -84,7 +84,7 @@
                                 </label>
                                 <br />
                             }
-                           
+
                         </div>
                     </div>
 
