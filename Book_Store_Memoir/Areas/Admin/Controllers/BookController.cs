@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace Book_Store_Memoir.Areas.Admin.Controllers
 {
@@ -28,7 +30,11 @@ namespace Book_Store_Memoir.Areas.Admin.Controllers
         }
         public IActionResult Index()
         {
-            var dsSanPham = _db.Books.Include(p => p.Category).
+            if (HttpContext.Session.GetString("AdminName") == null)
+            {
+                return RedirectToAction("Index", "AdminLogin");
+            }
+                var dsSanPham = _db.Books.Include(p => p.Category).
                 Include(p => p.Publisher).Include(p => p.Language).
                 Include(p => p.BookAuthors).
                 ThenInclude(ba => ba.Author);
@@ -42,6 +48,23 @@ namespace Book_Store_Memoir.Areas.Admin.Controllers
             ViewBag.DSTG = new SelectList(_db.Authors.ToList(), "Id", "NameAuhor");
             return View();
         }
+        private bool IsImage(IFormFile file)
+        {
+            try
+            {
+                using (var image = Image.FromStream(file.OpenReadStream()))
+                {
+                    return image.RawFormat.Equals(ImageFormat.Jpeg) ||
+                           image.RawFormat.Equals(ImageFormat.Png) ||
+                           image.RawFormat.Equals(ImageFormat.Gif) ||
+                           image.RawFormat.Equals(ImageFormat.Bmp);
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
         [HttpPost]
         public IActionResult Create(Book book, IFormFile file, int[] Authors)
         {
@@ -50,6 +73,12 @@ namespace Book_Store_Memoir.Areas.Admin.Controllers
                 string wwwRootPath = _environment.WebRootPath;
                 if (file != null)
                 {
+                    if (!IsImage(file))
+                    {
+                        _notyfService.Error("Chỉ được chọn file hình ảnh!!!");
+                        // Xử lý lỗi nếu muốn
+                        return RedirectToAction("Create");
+                    }
                     string fileName = Guid.NewGuid().ToString();
                     var uploads = Path.Combine(wwwRootPath, @"image\sanpham");
                     var extention = Path.GetExtension(file.FileName);

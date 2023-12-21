@@ -83,8 +83,8 @@
                                                     <a asp-action="Plus" asp-route-receiptDetailsId="@item.Id" asp-route-id="@item.DeliveryReceiptId" class="btn btn-outline-primary js-btn-minus" type="button">&minus;</a>
                                                 </div>
                                             </td>
-                                            <td>@item.Book.Price.Value.ToString("#,##0") VNĐ</td>
-
+                                            @*<td>@item.Book.Price.Value.ToString("#,##0") VNĐ</td>*@
+                                            <td>@((item.Book.Price * item.Quantity).Value.ToString("#,##0")) VND</td>
 
                                             <td></td>
                                         </tr>
@@ -99,7 +99,7 @@
                     <div class="row m-t-30 lh-1-8">
                         <div class="col-sm-12">
                             <div class="float-right text-right">
-                                <h3><span class="font-weight-semibold text-dark">Tổng tiền: </span>@Model.Orders.TotalAmount.Value.ToString("#,##0") VNĐ</h3>
+                                <h3><span class="font-weight-semibold text-dark">Tổng tiền: </span>@Model.ReceiptDetails.First().TotalAmount.ToString() VNĐ</h3>
                             </div>
                         </div>
                     </div>

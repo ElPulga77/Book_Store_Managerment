@@ -36,7 +36,15 @@
                 </tr>
                 <tr>
                     <td>Tác giả:</td>
-                    @*<td>@Model.BookAuthors.First().Author.NameAuhor</td>*@
+                    <td>
+                        @if (Model.BookAuthors.Any())
+                        {
+                            foreach (var author in Model.BookAuthors)
+                            {
+                                <p>@author.Author.NameAuhor</p>
+                            }
+                        }
+                    </td>
                 </tr>
                 <tr>
                     <td>Giá:</td>

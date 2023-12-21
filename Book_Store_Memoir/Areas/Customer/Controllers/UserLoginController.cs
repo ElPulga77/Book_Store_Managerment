@@ -1,4 +1,5 @@
-﻿using Book_Store_Memoir.Data;
+﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using Book_Store_Memoir.Data;
 using Book_Store_Memoir.DataAccess.Reponsitory;
 using Book_Store_Memoir.Models;
 using Book_Store_Memoir.Models.Models;
@@ -13,10 +14,12 @@ namespace Book_Store_Memoir.Areas.Customer.Controllers
     {
         private readonly ApplicationDbContext _db;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public UserLoginController(ApplicationDbContext db, IHttpContextAccessor httpContextAccessor)
+        public INotyfService _notyfService { get; }
+        public UserLoginController(ApplicationDbContext db, IHttpContextAccessor httpContextAccessor, INotyfService notyfService)
         {
             _db = db;
             _httpContextAccessor = httpContextAccessor;
+            _notyfService = notyfService;   
         }
         public IActionResult Login()
         {
@@ -72,7 +75,8 @@ namespace Book_Store_Memoir.Areas.Customer.Controllers
                 }
                 else
                 {
-                    ViewBag.error = "Email đã tồn tại";
+                    /*ViewBag.error = "Email đã tồn tại";*/
+                    _notyfService.Error("Địa chỉ Email đã tồn tại trong hệ thống!!!");
                     return View();
                 }
             }

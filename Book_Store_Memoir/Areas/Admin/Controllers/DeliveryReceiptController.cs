@@ -1,4 +1,5 @@
 ﻿using Book_Store_Memoir.Data;
+using Book_Store_Memoir.Models;
 using Book_Store_Memoir.Models.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -15,6 +16,10 @@ namespace Book_Store_Memoir.Areas.Admin.Controllers
         }
         public IActionResult Index(int? id)
         {
+            if (HttpContext.Session.GetString("AdminName") == null)
+            {
+                return RedirectToAction("Index", "AdminLogin");
+            }
             var receipt = _db.DeliveryReceipts.Include(p => p.Orders).ThenInclude(pa=>pa.Customers).Include(p => p.Shipper).ToList();
             return View(receipt);
 
@@ -73,13 +78,21 @@ namespace Book_Store_Memoir.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-
+            
             var Chitietdonhang = _db.ReceiptDetails
                 .Include(x => x.Book)
                 .Where(x => x.DeliveryReceiptId == id)
                 .OrderBy(x => x.Id);
             ViewBag.ChiTiet = Chitietdonhang.ToList();
-
+            decimal totalAmount = 0;
+            foreach (var item in Chitietdonhang)
+            {
+                totalAmount += (decimal)(item.Book.Price * item.Quantity);
+            }
+            if (Chitietdonhang.Any())
+            {
+                Chitietdonhang.First().TotalAmount = (double)totalAmount;
+            }
             return View(receipt);
         }
         public IActionResult Minus(int receiptDetailsId, int id)
@@ -87,7 +100,7 @@ namespace Book_Store_Memoir.Areas.Admin.Controllers
             var orderDetail = _db.ReceiptDetails.Find(receiptDetailsId);
             if (orderDetail != null)
             {
-                if (orderDetail.Quantity > 1)
+                if (orderDetail.Quantity > 0)
                 {
                     orderDetail.Quantity--;
                     _db.SaveChanges();

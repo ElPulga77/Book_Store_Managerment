@@ -17,6 +17,10 @@ namespace Book_Store_Memoir.Areas.Admin.Controllers
         }
         public IActionResult Index()
         {
+            if (HttpContext.Session.GetString("AdminName") == null)
+            {
+                return RedirectToAction("Index", "AdminLogin");
+            }
             var order = _db.Orders.Include(p => p.Customers).Include(p=>p.OrderStatus);
             return View(order.ToList());
         }

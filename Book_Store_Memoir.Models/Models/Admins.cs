@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Book_Store_Memoir.Models.Models
 {
-    public class Admin
+    public class Admins
     {
         [Key]
         public int Id { get; set; }

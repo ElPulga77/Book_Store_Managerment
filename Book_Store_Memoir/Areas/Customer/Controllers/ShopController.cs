@@ -3,6 +3,7 @@ using Book_Store_Memoir.Data;
 using Book_Store_Memoir.Models;
 using Book_Store_Memoir.Models.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using System.Web;
@@ -20,8 +21,9 @@ namespace Book_Store_Memoir.Areas.Customer.Controllers
             _db = db;
             _notyfService = notyfService;   
         }
-        public IActionResult Index(string Search, int page=1)
+        public IActionResult Index(int catID, string Search, int page=1 )
         {
+            ViewBag.DSTL = new SelectList(_db.Categories.ToList(), "Id", "Name");
             int pageSize = 9;
             string userName = HttpContext.Session.GetString("UserName");
             ViewBag.UserName = userName;
@@ -34,12 +36,22 @@ namespace Book_Store_Memoir.Areas.Customer.Controllers
             // Truyền số trang, danh sách sản phẩm và tổng số trang vào view
             ViewData["CurrentPage"] = page;
             ViewData["TotalPages"] = totalPages;
-            if (!string.IsNullOrEmpty(Search) )
+            if (!string.IsNullOrEmpty(Search) && catID != 0)
             {
                 productsForPage = _db.Books.AsNoTracking()
-                                   .Where(x =>  x.Title.Contains(Search));
+                                   .Where(x => x.Category_Id == catID && x.Title.Contains(Search));
+            }
+            else if (!string.IsNullOrEmpty(Search))
+            {
+                productsForPage = _db.Books.AsNoTracking()
+                                   .Where(x => x.Title.Contains(Search));
+            }
+            else if (catID != 0)
+            {
+                productsForPage = _db.Books.AsNoTracking().Where(x => x.Category_Id == catID);
             }
             return View(productsForPage);
+            
         }
         public IActionResult Details(int id)
         {
