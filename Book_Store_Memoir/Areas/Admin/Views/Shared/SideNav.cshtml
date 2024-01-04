@@ -7,7 +7,7 @@
                     <span class="icon-holder">
                         <i class="anticon anticon-dashboard"></i>
                     </span>
-                    <span class="title">Dashboard</span>
+                    <span class="title">Thống kê</span>
                     <span class="arrow">
                         <i class="arrow-icon"></i>
                     </span>
@@ -27,22 +27,22 @@
                     </li>
                 </ul>
             </li>
-          @*  <li class="nav-item dropdown">
+            <li class="nav-item dropdown">
                 <a class="dropdown-toggle" href="javascript:void(0);">
                     <span class="icon-holder">
                         <i class="anticon anticon-appstore"></i>
                     </span>
-                    <span class="title">Apps</span>
+                    <span class="title">Quản lý sản phẩm</span>
                     <span class="arrow">
                         <i class="arrow-icon"></i>
                     </span>
                 </a>
                 <ul class="dropdown-menu">
                     <li>
-                        <a href="app-chat.html">Chat</a>
+                        <a href="app-chat.html">Thêm sản phẩm</a>
                     </li>
                     <li>
-                        <a href="app-file-manager.html">File Manager</a>
+                        <a href="app-file-manager.html">Xóa</a>
                     </li>
                     <li>
                         <a href="app-mail.html">Mail</a>
@@ -92,7 +92,7 @@
                     <span class="icon-holder">
                         <i class="anticon anticon-build"></i>
                     </span>
-                    <span class="title">UI Elements</span>
+                    <span class="title">Quản lý đơn hàng</span>
                     <span class="arrow">
                         <i class="arrow-icon"></i>
                     </span>
@@ -129,7 +129,7 @@
                     <span class="icon-holder">
                         <i class="anticon anticon-hdd"></i>
                     </span>
-                    <span class="title">Components</span>
+                    <span class="title">Quản lý khách hàng</span>
                     <span class="arrow">
                         <i class="arrow-icon"></i>
                     </span>
@@ -169,7 +169,7 @@
                     <span class="icon-holder">
                         <i class="anticon anticon-form"></i>
                     </span>
-                    <span class="title">Forms</span>
+                    <span class="title">Quản lý nhân viên</span>
                     <span class="arrow">
                         <i class="arrow-icon"></i>
                     </span>
@@ -191,7 +191,7 @@
                     <span class="icon-holder">
                         <i class="anticon anticon-table"></i>
                     </span>
-                    <span class="title">Tables</span>
+                    <span class="title">Quản lý tác giả</span>
                     <span class="arrow">
                         <i class="arrow-icon"></i>
                     </span>
@@ -229,7 +229,7 @@
                     <span class="icon-holder">
                         <i class="anticon anticon-file"></i>
                     </span>
-                    <span class="title">Pages</span>
+                    <span class="title">Quản lý Nhà xuất bản</span>
                     <span class="arrow">
                         <i class="arrow-icon"></i>
                     </span>
@@ -276,14 +276,14 @@
                     <span class="icon-holder">
                         <i class="anticon anticon-lock"></i>
                     </span>
-                    <span class="title">Authentication</span>
+                    <span class="title">Quản lý giao hàng</span>
                     <span class="arrow">
                         <i class="arrow-icon"></i>
                     </span>
                 </a>
                 <ul class="dropdown-menu">
                     <li>
-                        <a href="login-1.html">Login 1</a>
+                        <a asp-controller="Shipper" asp-action="Index" asp-route-id="@ViewBag.Shipper">Đơn hàng của shipper</a>
                     </li>
                     <li>
                         <a href="login-2.html">Login 2</a>
@@ -307,7 +307,7 @@
                         <a href="error-2.html">Error 2</a>
                     </li>
                 </ul>
-            </li>*@
+            </li>
         </ul>
     </div>
 </div>

@@ -95,21 +95,39 @@ namespace Book_Store_Memoir.Areas.Customer.Controllers
             }
         }
         [HttpPost]
-        public IActionResult Login1(Customers customer, string password)
+        public IActionResult Login1(Customers customer, string password, Admins admmin)
         {
             var f_password = ComputeMd5Hash(password);
             if (HttpContext.Session.GetString("UserName") == null)
             {
-                var user = _db.Customers.Where(x=>x.Name.Equals(customer.Name)&& x.Password.Equals(customer.Password)).FirstOrDefault();
+                var user = _db.Customers.Where(x=>x.Name.Equals(customer.Name)&& x.Password.Equals(f_password)).FirstOrDefault();
+                var admin = _db.Admins.Where(x => x.Name.Equals(customer.Name) && x.Password.Equals(customer.Password)).FirstOrDefault();
                 if (user != null)
                 {
                     HttpContext.Session.SetString("UserName", user.Name.ToString());
+                    HttpContext.Session.SetString("UserID", user.CustomerId.ToString());
                     HttpContext.Session.SetString("Phone", user.Phone.ToString());
                     HttpContext.Session.SetObject("User", user);
+                    _notyfService.Success("Đăng nhập thành công!!!");
                     return RedirectToAction("Index", "Home");
-                }    
+                }
+                else if(admin != null)
+                {
+                    HttpContext.Session.SetObject("Admin", admin);
+                    return RedirectToAction("Index", "Home", new { area = "Admin" });
+
+                }
+                else
+                {
+                    _notyfService.Error("Địa chỉ email hoặc mật khẩu không chính xác!!!");
+                }
             }
             return View();
+        }
+        public ActionResult Logout()
+        {
+            HttpContext.Session.Remove("UserName");//remove session
+            return RedirectToAction("Login1");
         }
     }
 }

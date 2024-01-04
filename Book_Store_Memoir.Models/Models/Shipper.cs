@@ -12,7 +12,7 @@ namespace Book_Store_Memoir.Models.Models
     {
         public Shipper()
         {
-            Orders = new HashSet<Orders>();
+            DeliveryReceipts = new HashSet<DeliveryReceipt>();
         }
         [Key]
         public int Id { get; set; }
@@ -21,6 +21,7 @@ namespace Book_Store_Memoir.Models.Models
         public string ImageAvt { get; set; }
         public string CCCD { get; set; }
         public string Adress { get; set; }
+        public string Password { get; set; }    
         public virtual ICollection<Orders> Orders { get; set; }
         public virtual ICollection<DeliveryReceipt> DeliveryReceipts { get; set; }
     }

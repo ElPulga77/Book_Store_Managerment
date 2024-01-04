@@ -3,14 +3,16 @@
     Layout = null;
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-
+    <!-- Add these lines in your HTML file -->
+    <link rel="stylesheet" href="https://cdn.rawgit.com/caroso1222/notyf/master/dist/notyf.min.css" />
+    <script src="https://cdn.rawgit.com/caroso1222/notyf/master/dist/notyf.min.js"></script>
+    @await Component.InvokeAsync("Notyf")
 }
 <section class="vh-100">
     <div class="container py-5 h-100">
         <div class="row d-flex align-items-center justify-content-center h-100">
             <div class="col-md-8 col-lg-7 col-xl-6">
-                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.svg"
-                     class="img-fluid" alt="Phone image">
+                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.svg" class="img-fluid" alt="Phone image">
             </div>
             <div class="col-md-7 col-lg-5 col-xl-5 offset-xl-1">
                 <form asp-action="Login">
@@ -56,3 +58,5 @@
         </div>
     </div>
 </section>
+
+

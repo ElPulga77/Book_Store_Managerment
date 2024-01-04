@@ -1,4 +1,5 @@
-﻿using Book_Store_Memoir.Data;
+﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using Book_Store_Memoir.Data;
 using Book_Store_Memoir.Models;
 using Book_Store_Memoir.Models.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -11,9 +12,11 @@ namespace Book_Store_Memoir.Areas.Admin.Controllers
     public class OrderController : Controller
     {
         private readonly ApplicationDbContext _db;
-        public OrderController(ApplicationDbContext db)
+        public INotyfService _notyfService { get; }
+        public OrderController(ApplicationDbContext db, INotyfService notyfService)
         {
             _db = db;
+            _notyfService = notyfService;
         }
         public IActionResult Index()
         {
@@ -21,7 +24,7 @@ namespace Book_Store_Memoir.Areas.Admin.Controllers
             {
                 return RedirectToAction("Index", "AdminLogin");
             }
-            var order = _db.Orders.Include(p => p.Customers).Include(p=>p.OrderStatus);
+            var order = _db.Orders.Include(p => p.Customers).Include(p => p.OrderStatus);
             return View(order.ToList());
         }
         public async Task<IActionResult> Details(int? id)
@@ -33,7 +36,7 @@ namespace Book_Store_Memoir.Areas.Admin.Controllers
             }
 
             var order = await _db.Orders
-                .Include(o => o.Customers).Include(o=>o.OrderStatus)
+                .Include(o => o.Customers).Include(o => o.OrderStatus)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (order == null)
             {
@@ -73,22 +76,60 @@ namespace Book_Store_Memoir.Areas.Admin.Controllers
             // Redirect hoặc trả về kết quả
             return RedirectToAction("Details", new { id = order.Id });
         }*/
-        public IActionResult ConfirmOrder(Orders x)
-        {         
-                Orders hv = _db.Orders.Find(x.Id);
-                if (hv != null)
+        public IActionResult ConfirmOrder(Orders x, int id)
+        {
+            Orders hv = _db.Orders.Find(x.Id);
+            if (hv != null)
+            {
+               if(hv.OrderStatusId == 1)
                 {
-                    hv.OrderStatusId = 2;                   
+                    hv.OrderStatusId = 2;
                     _db.Orders.Update(hv);
                     _db.SaveChanges();
-                    /* _notyfService.Success("Thay đổi trạng thái thành công");*/
+                    return RedirectToAction("Index");
                 }
-                return RedirectToAction("Index");
+                else if (hv.OrderStatusId == 5)
+                {
+                    _notyfService.Error("Đơn hàng này đã bị hủy trước đó!!!");
+                }
+                else if (hv.OrderStatusId == 2)
+                {
+                    _notyfService.Error("Đơn hàng này đã được xác nhận trước đó trước đó!!!");
+                }
+                else if (hv.OrderStatusId == 3)
+                {
+                    _notyfService.Error("Đơn hàng này đang được vận chuyển!!!");
+                }
+                else if (hv.OrderStatusId == 5)
+                {
+                    _notyfService.Error("Đơn hàng này đã bị hủy trước đó!!!");
+                }
+               else
+                {
+                    _notyfService.Error("Đơn hàng này đã được giao!!!");
+
+                }
+                /* _notyfService.Success("Thay đổi trạng thái thành công");*/
+            }
+            return RedirectToAction("Details", new { id });
+        }
+        public IActionResult CancelOrder(Orders x, int id)
+        {
+            Orders hv = _db.Orders.Find(x.Id);
+            if (hv != null)
+            {
+                hv.OrderStatusId = 5;
+                _db.Orders.Update(hv);
+                _db.SaveChanges();
+                _notyfService.Information("Đơn hàng đã bị hủy!!!");
+                return RedirectToAction("Details", new { id });
+            }
+            return RedirectToAction("Index");
         }
         public IActionResult ListOrderConfirm(int statusId = 2)
         {
             var dsordercf = _db.Orders.Include(p => p.Customers).Include(p => p.OrderStatus).Where(order => order.OrderStatusId == 2).ToList();
-            return View(dsordercf);  
+            return View(dsordercf);
         }
         public async Task<IActionResult> View(int? id)
         {
@@ -119,11 +160,11 @@ namespace Book_Store_Memoir.Areas.Admin.Controllers
             var orderDetail = _db.OrderDetails.Find(orderDetailId);
             if (orderDetail != null)
             {
-              if(orderDetail.Quantity > 1)
+                if (orderDetail.Quantity > 1)
                 {
                     orderDetail.Quantity--;
                     _db.SaveChanges();
-                }    
+                }
             }
             return RedirectToAction("Details", new { id });
         }
@@ -131,22 +172,32 @@ namespace Book_Store_Memoir.Areas.Admin.Controllers
         {
             var orderDetail = _db.OrderDetails.Find(orderDetailId);
             if (orderDetail != null)
-            {  
-                    orderDetail.Quantity++;
-                    _db.SaveChanges();
+            {
+                orderDetail.Quantity++;
+                _db.SaveChanges();
             }
             return RedirectToAction("Details", new { id });
         }
-        public IActionResult CreateDelivery (DeliveryReceipt receipt, ReceiptDetails details)
+        public IActionResult CreateDelivery(DeliveryReceipt receipt, ReceiptDetails details)
         {
-            DeliveryReceipt deliveryReceipt = new DeliveryReceipt();    
+            bool isDeliveryReceiptExists = _db.DeliveryReceipts.Any(dr => dr.OrderId == receipt.Id);
+            if (isDeliveryReceiptExists)
+            {
+
+                _notyfService.Error("Phiếu giao hàng đã được tạo trước đó!!!!");
+                return RedirectToAction("Index");
+            }
+
+            DeliveryReceipt deliveryReceipt = new DeliveryReceipt();
             deliveryReceipt.DeliveryDate = DateTime.Now;
             deliveryReceipt.CreatedAt = DateTime.Now;
             deliveryReceipt.OrderId = receipt.Id;
             deliveryReceipt.ShipperId = 1;
+            deliveryReceipt.TotalAmount = receipt.TotalAmount;
             _db.Add(deliveryReceipt);
             _db.SaveChanges();
-            return RedirectToAction("Index");  
+            _notyfService.Success("Tạo thành công phiếu giao hàng!!!!");
+            return RedirectToAction("Index");
         }
     }
 }

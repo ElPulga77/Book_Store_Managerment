@@ -10,11 +10,16 @@ namespace Book_Store_Memoir.Models.Models
 {
     public class DeliveryReceipt
     {
+        public DeliveryReceipt()
+        {
+            ReceiptDetails = new HashSet<ReceiptDetails>();
+        }
         [Key]
         public int Id { get; set; }
         public DateTime DeliveryDate { get; set; }
         public string? Note { get; set; }
         public DateTime CreatedAt { get; set; }
+        public double? TotalAmount { get; set; }
         public int OrderId { get; set; }
         [ForeignKey("OrderId")]
         public int ShipperId { get; set; }

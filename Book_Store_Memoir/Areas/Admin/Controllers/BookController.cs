@@ -32,13 +32,18 @@ namespace Book_Store_Memoir.Areas.Admin.Controllers
         {
             if (HttpContext.Session.GetString("AdminName") == null)
             {
+                _notyfService.Error("Tài khoản của bạn không có quyền truy cập chức năng này!!!!");
                 return RedirectToAction("Index", "AdminLogin");
             }
+            else if (_db.Admins.First().Role == "ADMIN")
+            {
                 var dsSanPham = _db.Books.Include(p => p.Category).
-                Include(p => p.Publisher).Include(p => p.Language).
-                Include(p => p.BookAuthors).
-                ThenInclude(ba => ba.Author);
-            return View(dsSanPham.ToList());
+               Include(p => p.Publisher).Include(p => p.Language).
+               Include(p => p.BookAuthors).
+               ThenInclude(ba => ba.Author);
+                return View(dsSanPham.ToList());
+            }
+            return View();
         }
         public IActionResult Create()
         {
@@ -66,14 +71,14 @@ namespace Book_Store_Memoir.Areas.Admin.Controllers
             }
         }
         [HttpPost]
-        public IActionResult Create(Book book, IFormFile file, int[] Authors)
+        public IActionResult Create(Book? book, IFormFile file, int[] Authors)
         {
             if (ModelState.IsValid)
             {
                 string wwwRootPath = _environment.WebRootPath;
                 if (file != null)
                 {
-                    if (!IsImage(file))
+                    if (!IsImage(file) || file ==null)
                     {
                         _notyfService.Error("Chỉ được chọn file hình ảnh!!!");
                         // Xử lý lỗi nếu muốn
@@ -88,6 +93,7 @@ namespace Book_Store_Memoir.Areas.Admin.Controllers
                     }
                     book.Image = fileName + extention;
                 }
+                _notyfService.Success("Thêm sản phẩm thành công!!!!");
                 _bookReponsitory.AddBook(book);
                 if (Authors != null && Authors.Any())
                 {
@@ -95,11 +101,16 @@ namespace Book_Store_Memoir.Areas.Admin.Controllers
                     {
                         var bookAuthor = new BookAuthor { BookId = book.Id, AuthorId = authorId };
                         _db.BookAuthors.Add(bookAuthor);
-                        _db.SaveChanges();  
+                        _db.SaveChanges();
+                        return RedirectToAction("Index");
                     }
                 }
             }
-            return RedirectToAction("Index");
+            ViewBag.DSTL = new SelectList(_db.Categories.ToList(), "Id", "Name");
+            ViewBag.DSNN = new SelectList(_db.Languages.ToList(), "Id", "Language_Name");
+            ViewBag.DSNXB = new SelectList(_db.Publisher.ToList(), "Id", "Name");
+            ViewBag.DSTG = new SelectList(_db.Authors.ToList(), "Id", "NameAuhor");
+            return View();
         }
         public IActionResult Details(int id)
         {
@@ -109,15 +120,27 @@ namespace Book_Store_Memoir.Areas.Admin.Controllers
                 ThenInclude(ba => ba.Author).FirstOrDefault(p => p.Id == id);
             return View(book);
         }
-        public IActionResult DeleteBook(int id)
+        public IActionResult DeleteBook(Book book, int id)
         {
-            int dem = _db.ReceiptDetails.Where(a => a.BookId == id).ToList().Count;
+            int dem = _db.OrderDetails.Where(a => a.BookId == id).ToList().Count;
             ViewBag.flag = dem;
-            Book x = _db.Books.Include(p => p.Category).
+            if (dem > 0)
+            {
+                Book x = _db.Books.Include(p => p.Category).
                 Include(p => p.Publisher).Include(p => p.Language).
                 Include(p => p.BookAuthors).
                 ThenInclude(ba => ba.Author).FirstOrDefault(p => p.Id == id);
-            return View(x);
+                _notyfService.Error("Không thể xóa sản phẩm!!!!");
+                return View(x);
+            }
+            else
+            {
+               Book x = _db.Books.Include(p => p.Category).
+               Include(p => p.Publisher).Include(p => p.Language).
+               Include(p => p.BookAuthors).
+               ThenInclude(ba => ba.Author).FirstOrDefault(p => p.Id == id);
+                return View(x);
+            }
         }
         public IActionResult Delete(int id)
         {
@@ -149,7 +172,7 @@ namespace Book_Store_Memoir.Areas.Admin.Controllers
             return View(book);
         }
         [HttpPost]
-        public IActionResult Edit(Book book, IFormFile file)
+        public IActionResult Edit(Book book, IFormFile? file, int[] Authors)
         {
             if (ModelState.IsValid)
             {
@@ -181,6 +204,15 @@ namespace Book_Store_Memoir.Areas.Admin.Controllers
                 }
                 _db.Books.Update(book);
                 _db.SaveChanges();
+                if (Authors != null && Authors.Any())
+                {
+                    foreach (var authorId in Authors)
+                    {
+                        var bookAuthor = new BookAuthor { BookId = book.Id, AuthorId = authorId };
+                        _db.BookAuthors.Add(bookAuthor);
+                        _db.SaveChanges();
+                    }
+                }
 
             }
             return RedirectToAction("Index");

@@ -56,7 +56,7 @@
                     <div class="form-group ">
                         <label class="font-weight-semibold" for="productBrand">Hình ảnh</label>
                         <input name="file" type="file" class="form-control-file" asp-for="Image" enctype="multipart/form-data" multiple accept=".jpg, .jpeg, .png, .gif">
-                        <span asp-validation-for="Image" class="text-danger"></span>
+                   
                     </div>
 
                     <div class="form-group">
@@ -64,18 +64,21 @@
                         <select class="custom-select" asp-for="Category_Id" style="min-width: 200px;" asp-items="ViewBag.DSTL">
                             <option value="" disable selected> Chọn thể loại sách</option>
                         </select>
+                        <span asp-validation-for="Category_Id" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label class="font-weight-semibold" for="productCategory">Nhà xuất bản</label>
                         <select class="custom-select" asp-for="PublisherId" style="min-width: 200px;" asp-items="ViewBag.DSNXB">
                             <option value="" disable selected> Chọn nhà xuất bản</option>
                         </select>
+                        <span asp-validation-for="PublisherId" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label class="font-weight-semibold" for="productCategory">Ngôn ngữ</label>
                         <select class="custom-select" asp-for="LanguageId" style="min-width: 200px;" asp-items="ViewBag.DSNN">
                             <option value="" disable selected> Chọn ngôn ngữ</option>
                         </select>
+                        <span asp-validation-for="LanguageId" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label class="font-weight-semibold" for="productCategory">Tác giả</label>
@@ -88,31 +91,22 @@
                             </div>
                         </div>
                         <div class="form-group">
-                         
-                            <div class="custom-select" style="min-width: 200px;" id="authorList">
+                            <div class="custom-select" style="min-width: 200px;" id="authorList" >
                                 @foreach (var item in ViewBag.DSTG)
                                 {
-                                    <label data-value="@item.Value">
-                                        <input type="checkbox" id="author" name="Authors" value="@item.Text" /> @item.Text
+                                    <label>
+                                        <input type="checkbox" id="author" data-value="@item.Text" name="Authors" value="@item.Value" /> @item.Text
                                     </label>
                                     <br />
                                 }
+
                             </div>
-                      
                         </div>
+                                  
                         <div id="selectedAuthors" class="mt-3">
                             <!-- Danh sách tác giả đã chọn sẽ được hiển thị ở đây -->
-                        </div>
-
-                
+                        </div>                
                     </div>
-
-
-
-                    @*   <div class="form-group">
-                    <label class="font-weight-semibold" for="productName">Giá</label>
-                    <input type="number" min="0" class="form-control" asp-for="Price">
-                    </div>*@
                     <div class="form-group">
                     </div>
                 </div>
@@ -120,6 +114,9 @@
         </div>
     </div>
 </form>
+
+
+
 <script>
     $(document).ready(function () {
         // Ẩn danh sách tác giả ban đầu
@@ -156,17 +153,15 @@
         $("input[name='Authors']").change(function () {
             updateSelectedAuthors();
         });
-
         function updateSelectedAuthors() {
             // Xóa danh sách tác giả đã chọn
             $("#selectedAuthors").empty();
 
             // Lặp qua các checkbox đã chọn và thêm vào danh sách
             $("input[name='Authors']:checked").each(function () {
-                var authorName = $(this).val();
+                var authorName = $(this).data("value");
                 $("#selectedAuthors").append('<div>' + authorName + '</div>');
             });
         }
     });
 </script>
-

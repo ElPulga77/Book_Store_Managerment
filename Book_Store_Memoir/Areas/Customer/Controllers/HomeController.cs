@@ -1,4 +1,5 @@
-using Book_Store_Memoir.Models;
+﻿using Book_Store_Memoir.Models;
+using Book_Store_Memoir.Models.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -16,12 +17,23 @@ namespace Book_Store.DataAccess.Controllers
 
         public IActionResult Index(string name)
         {
+        
             if (!string.IsNullOrEmpty(name))
             {
                 ViewBag.Name = name;
             }
             string userName = HttpContext.Session.GetString("UserName");
+            var user = HttpContext.Session.GetObject<Customers>("User");
             ViewBag.UserName = userName;
+            if (user != null)
+            {
+                ViewBag.DuyNe = user.CustomerId;
+            }
+            else
+            {
+                // Xử lý khi user là null, có thể gán một giá trị mặc định hoặc làm gì đó tương ứng
+                ViewBag.DuyNe = "";
+            }
             return View();
         }
 

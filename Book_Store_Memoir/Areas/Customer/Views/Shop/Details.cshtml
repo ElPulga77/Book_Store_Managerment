@@ -124,7 +124,13 @@
                                     <h6>Tác giả :</h6>
                                 </li>
                                 <li class="list-inline-item">
-                                    <p><strong></strong></p>
+                                    <p><strong>
+                                            @if (Model.BookAuthors.Any())
+                                            {
+                                                <p>@string.Join(", ", Model.BookAuthors.Select(author => author.Author.NameAuhor))</p>
+                                            }
+
+                                    </strong></p>
                                 </li>
                             </ul>
                            

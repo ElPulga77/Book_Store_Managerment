@@ -2,11 +2,12 @@
 @model Book_Store_Memoir.Models.Models.DeliveryReceipt
 
 @{
-    ViewData["Title"] = "Chi tiết đơn hàng" + Model.Id;
+    ViewData["Title"] = "Chi tiết đơn hàng của bạn";
 
     List<ReceiptDetails> orderChitiets = ViewBag.ChiTiet;
 
 }
+
 <div class="page-header">
     <h2 class="header-title"></h2>
     <div class="header-sub-title">
@@ -78,8 +79,8 @@
 
                                             <td>
                                                 <div class="input-group-prepend">
-                                                    <a asp-action="Minus" asp-route-receiptDetailsId="@item.Id" asp-route-id="@item.DeliveryReceiptId"  class="btn btn-outline-primary js-btn-minus" type="button">&minus;</a>
-                                                 
+                                                    <a asp-action="Minus" asp-route-receiptDetailsId="@item.Id" asp-route-id="@item.DeliveryReceiptId" class="btn btn-outline-primary js-btn-minus" type="button">&minus;</a>
+
                                                     <input type="text" disabled class="form-control text-center" value="@item.Quantity" style="width: 50px;" placeholder="">
                                                     <a asp-action="Plus" asp-route-receiptDetailsId="@item.Id" asp-route-id="@item.DeliveryReceiptId" class="btn btn-outline-primary js-btn-minus" type="button">&minus;</a>
                                                 </div>
@@ -108,10 +109,10 @@
                 <div class="card">
                     <div class="card-body">
                         @*<form asp-action="ConfirmOrder" method="post">
-                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                            <input type="hidden" asp-for="Id" />
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input type="hidden" asp-for="Id" />
 
-                            <button style="float:left" type="submit" class="btn btn-success">Xác nhận đơn hàng</button>
+                        <button style="float:left" type="submit" class="btn btn-success">Xác nhận đơn hàng</button>
                         </form>*@
                     </div>
 
@@ -119,4 +120,3 @@
             </div>
         </div>
     </div>
-

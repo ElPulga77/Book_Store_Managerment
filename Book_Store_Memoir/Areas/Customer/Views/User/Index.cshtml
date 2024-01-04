@@ -1,0 +1,95 @@
+﻿@model Book_Store_Memoir.Models.Models.CustomerInfo
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Thông Tin Khách Hàng</title>
+</head>
+
+<body>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col">
+                <h2>Thông Tin Khách Hàng</h2>
+            </div>
+            <div class="col">
+                <h3><a class="btn btn-danger" asp-controller="UserLogin" asp-action="Logout">Đăng xuất</a></h3>
+            </div>
+        </div>
+
+        <hr>
+
+        <!-- Thông tin cá nhân -->
+        <div class="card">
+            <div class="card-header">
+                Thông Tin Cá Nhân
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <strong>Họ và Tên:</strong> @Model.Cusname
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Email:</strong> @Model.Email
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <strong>Địa Chỉ:</strong> @Model.Address
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Số Điện Thoại:</strong> @Model.Phone
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Danh sách đơn hàng -->
+        <div class="card mt-4">
+            <div class="card-header">
+                Danh Sách Đơn Hàng
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Đơn Hàng #</th>
+                            <th scope="col">Ngày Đặt</th>
+                            <th scope="col">Tổng Tiền</th>
+                            <th scope="col">Trạng Thái</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                       @foreach(var item in Model.YourOrder)
+                        {
+                            <tr>
+                                <td>@item.Id</td>
+                                <td>@item.CreatedAt.ToShortDateString()</td>
+                                <td>@item.ReceiptDetails.First().TotalAmount.Value.ToString("#,##0") VND</td>
+
+                                <td>@item.Orders.OrderStatus.Status</td>
+                                <td>
+                                    @*<a href="@Url.Action("ViewOrder", "Order", new { orderId = item.Id })" class="btn btn-success">Xem Đơn Hàng</a>*@
+                                    <a class="btn btn-success" asp-action="YourOrder" asp-route-id="@item.Id">Xem đơn hàng</a>
+                                </td>
+                            </tr>
+                        }
+                        <!-- Các dòng khác tương tự -->
+                    </tbody>
+                </table>
+              
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS và Popper.js (được yêu cầu bởi Bootstrap) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

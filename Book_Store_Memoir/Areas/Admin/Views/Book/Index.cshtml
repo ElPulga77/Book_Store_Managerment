@@ -38,7 +38,7 @@
             <th>Image</th>
             <th>Title</th>
             <th>Price</th>
-            <th>Tác giả</th>
+         @*   <th>Tác giả</th>*@
             <th>Thể loại</th>
             <th>Ngôn ngữ</th>
             <th>Nhà xuất bản</th>
@@ -55,19 +55,24 @@
                 <tr>
                     <td><img width="50" height="50" src="~/image/sanpham/@item.Image" /></td>
                     <td>@item.Title</td>
-                  
 
-                    <td>@item.Price</td>
+
+                    <td>@item.Price.Value.ToString("#,##0") VNĐ</td>
           
-                    <td>
-                        @if (item.BookAuthors.Any())
+                   
+                  @*      @if (item.BookAuthors.Any())
                         {
                             foreach (var author in item.BookAuthors)
                             {
                                 <p>@author.Author.NameAuhor</p>
                             }
-                    }
-                    </td>
+                    }*@
+                  @*      @if (item.BookAuthors.Any())
+                        {
+                            <p>@string.Join(", ", item.BookAuthors.Select(author => author.Author.NameAuhor))</p>
+                        }*@
+
+                    
            
                     <td>@item.Category.Name</td>
                     <td>@item.Language.Language_Name</td>

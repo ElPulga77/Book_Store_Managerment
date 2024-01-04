@@ -36,19 +36,26 @@ namespace Book_Store_Memoir.Areas.Customer.Controllers
             // Truyền số trang, danh sách sản phẩm và tổng số trang vào view
             ViewData["CurrentPage"] = page;
             ViewData["TotalPages"] = totalPages;
-            if (!string.IsNullOrEmpty(Search) && catID != 0)
+            if(productsForPage!=null)
             {
-                productsForPage = _db.Books.AsNoTracking()
-                                   .Where(x => x.Category_Id == catID && x.Title.Contains(Search));
+                if (!string.IsNullOrEmpty(Search) && catID != 0)
+                {
+                    productsForPage = _db.Books.AsNoTracking()
+                                       .Where(x => x.Category_Id == catID && x.Title.Contains(Search));
+                }
+                else if (!string.IsNullOrEmpty(Search))
+                {
+                    productsForPage = _db.Books.AsNoTracking()
+                                       .Where(x => x.Title.Contains(Search));
+                }
+                else if (catID != 0)
+                {
+                    productsForPage = _db.Books.AsNoTracking().Where(x => x.Category_Id == catID);
+                }
             }
-            else if (!string.IsNullOrEmpty(Search))
+            else
             {
-                productsForPage = _db.Books.AsNoTracking()
-                                   .Where(x => x.Title.Contains(Search));
-            }
-            else if (catID != 0)
-            {
-                productsForPage = _db.Books.AsNoTracking().Where(x => x.Category_Id == catID);
+                _notyfService.Error("Không tìm thấy sản phẩm nào!!!!");
             }
             return View(productsForPage);
             
@@ -74,10 +81,8 @@ namespace Book_Store_Memoir.Areas.Customer.Controllers
 
             if (existingItem != null)
             {
-                if (existingItem.Quantity != sl)
-                {
-                    existingItem.Quantity += sl;
-                }
+                existingItem.Quantity += sl;
+                existingItem.OrderTotal = (double)(existingItem.Book.Price * existingItem.Quantity);
             }
             else
             {
@@ -114,7 +119,7 @@ namespace Book_Store_Memoir.Areas.Customer.Controllers
             }
 
             MySessions.Set(HttpContext.Session, "GioHang", gh);
-            _notyfService.Success("Đã thêm sản phẩm vào giỏ hàng!!");
+            /*_notyfService.Success("Đã thêm sản phẩm vào giỏ hàng!!");*/
             return View(gh);
         }
 
@@ -150,8 +155,13 @@ namespace Book_Store_Memoir.Areas.Customer.Controllers
                     if (existingItem.Quantity > 1)
                     {
                         existingItem.Quantity--; // Giảm số lượng sản phẩm xuống 1 đơn vị, đảm bảo số lượng không nhỏ hơn 1
+                        
                         MySessions.Set(HttpContext.Session, "GioHang", gh);
                     }
+                    else
+                    {
+                        _notyfService.Error("Số lượng không được bé hơn 1!!");
+                    }    
                 }
             }
 
@@ -177,93 +187,98 @@ namespace Book_Store_Memoir.Areas.Customer.Controllers
         }
         public IActionResult Checkout()
         {
-            if (HttpContext.Session.GetString("UserName") == null)
+          if(ModelState.IsValid)
             {
-                return RedirectToAction("Login1", "UserLogin");
-            }
-            else
-            {
-                string userName = HttpContext.Session.GetString("UserName");
-                string Phone = HttpContext.Session.GetString("Phone");
-                var user = HttpContext.Session.GetObject<Customers>("User");
-                Orders gh = MySessions.Get<Orders>(HttpContext.Session, "GioHang");
-
-                if (gh == null)
+                if (HttpContext.Session.GetString("UserName") == null)
                 {
-                    gh = new Orders();
-                    gh.CartItems = new List<ShoppingCartVM>();
+                    return RedirectToAction("Login1", "UserLogin");
                 }
-
-                decimal totalAmount = 0;
-                foreach (var item in gh.CartItems)
+                else
                 {
-                    totalAmount += (decimal)(item.Book.Price * item.Quantity);
+                    string userName = HttpContext.Session.GetString("UserName");
+                    string Phone = HttpContext.Session.GetString("Phone");
+                    var user = HttpContext.Session.GetObject<Customers>("User");
+                    Orders gh = MySessions.Get<Orders>(HttpContext.Session, "GioHang");
+
+                    if (gh == null)
+                    {
+                        gh = new Orders();
+                        gh.CartItems = new List<ShoppingCartVM>();
+                    }
+
+                    decimal totalAmount = 0;
+                    foreach (var item in gh.CartItems)
+                    {
+                        totalAmount += (decimal)(item.Book.Price * item.Quantity);
+                    }
+                    gh.CartItems.First().OrderTotal = (double)totalAmount;
+
+                        return View("Checkout", new Checkout
+                    {
+                        Cusname = user.Name,
+                        Phone = user.Phone,
+                        Email = user.Email,
+                        Address = user.Address,
+                        PaymentMethod = user.Name,
+                        CartItems = gh.CartItems,
+                        TotalAmount = (decimal)gh.CartItems.First().OrderTotal
+                    });
                 }
-                gh.CartItems.First().OrderTotal = (double)totalAmount;
-
-                return View("Checkout", new Checkout
-                {
-                    Cusname = user.Name,
-                    Phone = user.Phone,
-                    Email = user.Email,
-                    Address = user.Address,
-                    PaymentMethod = user.Name,
-                    CartItems = gh.CartItems,
-                    TotalAmount = (decimal)gh.CartItems.First().OrderTotal
-                });
             }
+            return RedirectToAction("Checkout");
                
         }
         [HttpPost]
         public IActionResult CreateOrder(Orders orders, string Cusname, string Address, string Phone)
         {
-            // Lấy thông tin người dùng từ phiên
-            var user = HttpContext.Session.GetObject<Customers>("User");
+       
+                // Lấy thông tin người dùng từ phiên
+                var user = HttpContext.Session.GetObject<Customers>("User");
 
-            // Lấy thông tin giỏ hàng từ phiên (nếu bạn lưu thông tin giỏ hàng trong phiên)
-            var shoppingCart = MySessions.Get<Orders>(HttpContext.Session, "GioHang");
-            
-            if (user!=null && shoppingCart!=null)
-            {
-                var order = new Orders
-                {
-                    CustomerId = user.CustomerId,
-                    CustomersCustomerId = user.CustomerId,
-                    BookId = shoppingCart.CartItems.First().Book.Id,
-                    Quantity = shoppingCart.Quantity,
-                    TotalAmount = shoppingCart.CartItems.First().OrderTotal,
-                    OrderStatusId =1,
-                    RecieverName = Cusname,
-                    Address = Address,
-                    PhoneNumber = Phone,
-                    OrderDate = DateTime.Now,
+                // Lấy thông tin giỏ hàng từ phiên (nếu bạn lưu thông tin giỏ hàng trong phiên)
+                var shoppingCart = MySessions.Get<Orders>(HttpContext.Session, "GioHang");
 
-                };
-                _db.Orders.Add(order);
-                _db.SaveChanges();
-                foreach(var cartItem in shoppingCart.CartItems)
+                if (user != null && shoppingCart != null)
                 {
-                        var orderItem = new OrderDetails
+                    var order = new Orders
                     {
-                        OrdersId = order.Id,
-                        BookId = cartItem.Book.Id,
-                        Quantity = cartItem.Quantity,
-                        TotalAmount = order.TotalAmount,
+                        CustomerId = user.CustomerId,
+                        CustomersCustomerId = user.CustomerId,
+                        BookId = shoppingCart.CartItems.First().Book.Id,
+                        Quantity = shoppingCart.Quantity,
+                        TotalAmount = shoppingCart.CartItems.First().OrderTotal,
+                        OrderStatusId = 1,
+                        RecieverName = Cusname,
+                        Address = Address,
+                        PhoneNumber = Phone,
+                        OrderDate = DateTime.Now,
+
+                    };
+                    _db.Orders.Add(order);
+                    _db.SaveChanges();
+                    foreach (var cartItem in shoppingCart.CartItems)
+                    {
+                        var orderItem = new OrderDetails
+                        {
+                            OrdersId = order.Id,
+                            BookId = cartItem.Book.Id,
+                            Quantity = cartItem.Quantity,
+                            TotalAmount = order.TotalAmount,
 
                         };
-                    _db.OrderDetails.Add(orderItem);
+                        _db.OrderDetails.Add(orderItem);
 
+                    }
+                    _db.SaveChanges();
                 }
-                _db.SaveChanges();
-            }
 
-           
 
-            // Xóa thông tin giỏ hàng từ phiên sau khi đã tạo đơn hàng
-            HttpContext.Session.Remove("GioHang");
 
-            // Hiển thị thông báo hoặc trang cảm ơn
-            return View("ThankYou");
+                // Xóa thông tin giỏ hàng từ phiên sau khi đã tạo đơn hàng
+                HttpContext.Session.Remove("GioHang");
+
+                // Hiển thị thông báo hoặc trang cảm ơn
+                return View("ThankYou");
         }
 
 

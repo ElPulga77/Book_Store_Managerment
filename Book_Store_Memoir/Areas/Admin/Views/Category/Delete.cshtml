@@ -1,0 +1,43 @@
+﻿@model Book_Store_Memoir.Models.Category
+@using AspNetCoreHero.ToastNotification.Abstractions
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="card-body">
+    @if ((int)ViewBag.flag == 0)
+    {
+        <h3>Bạn có thực sự muốn xóa danh mục này?</h3>
+        <div class="alert alert-warning" role="alert">
+            <p class="mb-0">Hành động này sẽ xóa danh mục "<strong>@Model.Name</strong>". Bạn chắc chắn chứ?</p>
+        </div>
+        <div class="d-flex justify-content-end">
+            <a asp-action="Index" class="btn btn-secondary mr-2">Hủy Bỏ</a>
+            <form asp-action="Delete" asp-route-id="@Model.Id" class="d-inline">
+                <input type="submit" value="Xóa" class="btn btn-danger" />
+            </form>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-danger" role="alert">
+            <p class="mb-0">Bạn không thể xóa danh mục này vì hiện tại đã có sản phẩm trong danh mục này.</p>
+        </div>
+    }
+
+    <h4 class="card-title mt-4">Thông tin danh mục: @Model.Name</h4>
+    <div class="table-responsive">
+        <table class="product-info-table m-t-20 table">
+            <tbody>
+                <tr>
+                    <td>ID:</td>
+                    <td class="text-dark font-weight-semibold">@Model.Id</td>
+                </tr>
+                <tr>
+                    <td>Tên danh mục:</td>
+                    <td>@Model.Name</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

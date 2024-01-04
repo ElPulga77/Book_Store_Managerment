@@ -39,18 +39,18 @@
                                     <td>
                                         <div class="input-group mb-3" style="max-width: 120px;">
                                             <div class="input-group-prepend">
-                                                <a asp-action="Minus" asp-route-cartId="@item.Book.Id" class="btn btn-outline-primary js-btn-minus" type="button">&minus;</a>
+                                                <a asp-action="Minus" asp-route-cartId="@item.Book.Id" class="btn btn-success" type="button">&minus;</a>
                                             </div>
                                             <input type="text" class="form-control text-center" value="@item.Quantity" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1">
                                             <div class="input-group-append">
-                                                <a asp-action="Plus" asp-route-cartId="@item.Book.Id" class="btn btn-outline-primary js-btn-plus" type="button">&plus;</a>
+                                                <a asp-action="Plus" asp-route-cartId="@item.Book.Id" class="btn btn-success" type="button">&plus;</a>
                                             </div>
                                         </div>
                                        
                                     </td>
                                     <td>@((item.Book.Price * item.Quantity).Value.ToString("#,##0")) VND</td>
 
-                                    <td><a asp-action="Delete" asp-route-cartId="@item.Book.Id" class="btn btn-primary btn-sm">X</a></td>
+                                    <td><a asp-action="Delete" asp-route-cartId="@item.Book.Id" class="btn btn-success btn-sm">X</a></td>
                                 </tr>
                             }
                            
@@ -64,10 +64,10 @@
             <div class="col-md-6">
                 <div class="row mb-5">
                     <div class="col-md-6 mb-3 mb-md-0">
-                        <button class="btn btn-primary btn-sm btn-block">Update Cart</button>
+                        <button class="btn btn-success btn-sm btn-block">Update Cart</button>
                     </div>
                     <div class="col-md-6">
-                        <button onclick="window.location='Index'" class="btn btn-outline-primary btn-sm btn-block">Tiếp tục mua hàng</button>
+                        <button onclick="window.location='Index'" class="btn btn-success">Tiếp tục mua hàng</button>
                     </div>
                 </div>
                 <div class="row">
@@ -79,7 +79,7 @@
                         <input type="text" class="form-control py-3" id="coupon" placeholder="Mã giảm giá">
                     </div>
                     <div class="col-md-4">
-                        <button class="btn btn-primary btn-sm">Apply Mã</button>
+                        <button class="btn btn-success btn-sm">Apply Mã</button>
                     </div>
                 </div>
             </div>
@@ -113,7 +113,7 @@
 
                         <div class="row">
                             <div class="col-md-12">
-                                <button asp-action="" class="btn btn-primary btn-lg py-3 btn-block" onclick="window.location='Checkout'">Tiến hành đặt hàng</button>
+                                <button asp-action="" class="btn btn-success btn-lg py-3 btn-block" onclick="window.location='Checkout'">Tiến hành đặt hàng</button>
                             </div>
 
                         </div>

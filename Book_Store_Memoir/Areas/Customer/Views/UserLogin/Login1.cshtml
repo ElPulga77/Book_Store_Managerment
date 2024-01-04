@@ -4,11 +4,10 @@
     ViewData["Title"] = "Login";
 }
 
-@*<div class="container py-5">
+<div class="container py-5">
     <div class="row py-5">
         <form class="col-md-9 m-auto" asp-action="Login1" method="post">
             <div class="row">
-
                 <div class="form-group col-md-6 mb-3">
                     <label asp-for="Name">Tên khách hàng</label>
                     <input asp-for="Name" class="form-control mt-1">
@@ -20,15 +19,23 @@
                     <input type="password" asp-for="Password" class="form-control mt-1">
                 </div>
             </div>
+
             <div class="row">
-                <div class="col text-end mt-2">
+                <div class="col-md-6 mb-3">
                     <button type="submit" class="btn btn-success btn-lg px-3">Đăng nhập</button>
                 </div>
             </div>
         </form>
+
+        <div class="row">
+            <div class="col text-end mt-2">
+                <a asp-action="Register" class="btn btn-success btn-lg px-3">Đăng ký tài khoản</a>
+            </div>
+        </div>
     </div>
-</div>*@
-<form asp-action="Login1" method="post">
+</div>
+
+@*<form asp-action="Login1" method="post">
     <section class="vh-100">
         <div class="container py-5 h-100">
             <div class="row d-flex align-items-center justify-content-center h-100">
@@ -53,33 +60,18 @@
                         </div>
 
                         <div class="d-flex justify-content-around align-items-center mb-4">
-                            <!-- Checkbox -->
-                            @* <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="form1Example3" checked />
-                            <label class="form-check-label" for="form1Example3"> Remember me </label>
-                            </div>*@
+                  
                             <a href="#!">Forgot password?</a>
                         </div>
 
                         <!-- Submit button -->
                         <button type="submit" class="btn btn-primary btn-lg btn-block">Đăng nhập</button>
 
-                        @* <div class="divider d-flex align-items-center my-4">
-                        <p class="text-center fw-bold mx-3 mb-0 text-muted">OR</p>
-                        </div>
-
-                        <a class="btn btn-primary btn-lg btn-block" style="background-color: #3b5998" href="#!"
-                        role="button">
-                        <i class="fab fa-facebook-f me-2"></i>Continue with Facebook
-                        </a>
-                        <a class="btn btn-primary btn-lg btn-block" style="background-color: #55acee" href="#!"
-                        role="button">
-                        <i class="fab fa-twitter me-2"></i>Continue with Twitter
-                        </a>*@
+                 
 
                     </form>
                 </div>
             </div>
         </div>
     </section>
-</form>
+</form>*@

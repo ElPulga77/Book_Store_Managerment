@@ -42,6 +42,10 @@ namespace Book_Store_Memoir.Areas.Admin.Controllers
             items.ShipperId = ShipperID;
             _db.Update(items);
             _db.SaveChanges();
+            var order = _db.Orders.Find(idOrders);
+            order.OrderStatusId = 3;
+            _db.Update(order);
+            _db.SaveChanges();  
             var Chitietdonhang = _db.OrderDetails
                .Include(x => x.Book)
                .Where(x => x.OrdersId == idOrders)
@@ -95,7 +99,7 @@ namespace Book_Store_Memoir.Areas.Admin.Controllers
             }
             return View(receipt);
         }
-        public IActionResult Minus(int receiptDetailsId, int id)
+        public IActionResult Minus(int receiptDetailsId, int id, double totalupdate, ReceiptDetails receipt)
         {
             var orderDetail = _db.ReceiptDetails.Find(receiptDetailsId);
             if (orderDetail != null)
@@ -103,6 +107,23 @@ namespace Book_Store_Memoir.Areas.Admin.Controllers
                 if (orderDetail.Quantity > 0)
                 {
                     orderDetail.Quantity--;
+                    _db.SaveChanges();
+                    var Chitietdonhang = _db.ReceiptDetails
+                    .Include(x => x.Book)
+                    .Where(x => x.DeliveryReceiptId == id)
+                    .OrderBy(x => x.Id);
+                    ViewBag.ChiTiet = Chitietdonhang.ToList();
+                    decimal totalAmount = 0;
+                    foreach (var item in Chitietdonhang)
+                    {
+                        totalAmount += (decimal)(item.Book.Price * item.Quantity);
+                    }
+                    if (Chitietdonhang.Any())
+                    {
+                        Chitietdonhang.First().TotalAmount = (double)totalAmount;
+                    }
+                    orderDetail.TotalAmount = Chitietdonhang.First().TotalAmount;
+                    _db.ReceiptDetails.Update(orderDetail);
                     _db.SaveChanges();
                 }
             }
