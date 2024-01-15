@@ -22,7 +22,7 @@
                     <td>Thể loại:</td>
                     <td>@Model.Category.Name</td>
                 </tr>
-               
+
                 <tr>
                     <td>Ngôn ngữ:</td>
                     <td>@Model.Language.Language_Name</td>
@@ -57,13 +57,23 @@
                         <img width="200" height="200" src="~/image/sanpham/@Model.Image" />
                     </td>
                 </tr>
-                
-            </tbody>
-           
+      @*  <dd class="col-sm-10">
+                    @if (!string.IsNullOrEmpty(Model.Images))
+                    {
+                        var imagePaths = Model.Images.Split(',');
+
+                        foreach (var imagePath in imagePaths)
+                        {
+                    <img src="@Url.Content("~/image/sanpham/" + imagePath)" alt="Product Image" />
+                        }
+                    }
+        </dd>*@
+        </tbody>
+
         </table>
-      @*  <td>
-            <a class="btn btn-secondary btn-tone m-r-5" asp-area="Admin" asp-controller="Book" asp-action="Edit" asp-route-id="">Edit</a>
-            <a class="btn btn-success btn-tone m-r-5" asp-area="Admin" asp-controller="Book" asp-action="Delete" asp-route-id="@Model.Id">Delete</a>
+        @*  <td>
+        <a class="btn btn-secondary btn-tone m-r-5" asp-area="Admin" asp-controller="Book" asp-action="Edit" asp-route-id="">Edit</a>
+        <a class="btn btn-success btn-tone m-r-5" asp-area="Admin" asp-controller="Book" asp-action="Delete" asp-route-id="@Model.Id">Delete</a>
         </td>*@
     </div>
 </div>

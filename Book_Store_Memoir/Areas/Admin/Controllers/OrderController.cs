@@ -142,6 +142,7 @@ namespace Book_Store_Memoir.Areas.Admin.Controllers
             }
             return RedirectToAction("Details", new { id });
         }
+        [HttpPost]
         public IActionResult CancelOrder(Orders x, int id)
         {
             Orders hv = _db.Orders.Find(x.Id);

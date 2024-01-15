@@ -90,7 +90,17 @@
                         <div class="col-sm-12">
                             <div class="float-right text-right">
                                 <h3 style="float:right"><span class="font-weight-semibold text-dark">Tổng tiền: </span>@Model.TotalAmount.Value.ToString("#,##0") VNĐ</h3>
-                                <button class="btn btn-danger" asp-action="CancelOrder" asp-route-id="@Model.Id">Hủy đơn hàng</button>
+                                <div class="col">
+                                    @if(Model.OrderStatusId!=1)
+                                    {
+
+                                    }
+                                    else
+                                    {
+                                        <h3><a class="btn btn-danger" asp-controller="User" asp-action="CancelOrder" asp-route-id="@Model.Id" asp-route-userID="@Model.Customers.CustomerId">Hủy đơn hàng</a></h3>
+
+                                    }
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -109,3 +119,4 @@
             </div>
         </div>
     </div>
+

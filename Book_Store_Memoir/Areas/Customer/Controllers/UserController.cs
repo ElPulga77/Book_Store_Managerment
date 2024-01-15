@@ -4,6 +4,7 @@ using Book_Store_Memoir.Models;
 using Book_Store_Memoir.Models.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Policy;
 
 namespace Book_Store_Memoir.Areas.Customer.Controllers
 {
@@ -64,7 +65,7 @@ namespace Book_Store_Memoir.Areas.Customer.Controllers
             ViewBag.ChiTiet = Chitietdonhang.ToList();
             return View(receipt);
         }
-        public IActionResult CancelOrder( int id)
+        public IActionResult CancelOrder( int id, int userID)
         {
             try
             {
@@ -80,7 +81,9 @@ namespace Book_Store_Memoir.Areas.Customer.Controllers
                 else
                 {
                     _notyfService.Error("Không thể hủy đơn hàng!!!");
-                    return RedirectToAction("Index");
+                    string url = Url.Action("Index", "User", new { userID = userID });
+                    return Redirect(url);
+             
                 }
                 
             }
@@ -89,7 +92,7 @@ namespace Book_Store_Memoir.Areas.Customer.Controllers
                 string errorMessage = $"Không thể thực hiện lệnh";
 
                 Console.WriteLine($"Không thể thực hiện lệnh");
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "User", new { userID });
             }
         }
     }

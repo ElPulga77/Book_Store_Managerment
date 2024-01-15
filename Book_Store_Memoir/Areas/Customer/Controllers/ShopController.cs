@@ -29,12 +29,23 @@ namespace Book_Store_Memoir.Areas.Customer.Controllers
         }
         public IActionResult Index(int catID, string Search, int page = 1)
         {
+            var user = HttpContext.Session.GetObject<Customers>("User");
+           
             ViewBag.DSTL = new SelectList(_db.Categories.ToList(), "Id", "Name");
             ViewBag.DSNXB = new SelectList(_db.Publisher.ToList(), "Id", "Name");
             ViewBag.DSNN = new SelectList(_db.Languages.ToList(), "Id", "Language_Name");
             int pageSize = 9;
             string userName = HttpContext.Session.GetString("UserName");
             ViewBag.UserName = userName;
+            if (user != null)
+            {
+                ViewBag.DuyNe = user.CustomerId;
+            }
+            else
+            {
+                // Xử lý khi user là null, có thể gán một giá trị mặc định hoặc làm gì đó tương ứng
+                ViewBag.DuyNe = "";
+            }
             var dsSanPham = _db.Books.Include(p => p.Category).Include(p => p.Publisher).Include(p => p.Language).Include(p => p.BookAuthors).ThenInclude(ba => ba.Author).ToList();
             int totalBook = dsSanPham.Count();
             // Tính số trang cần hiển thị

@@ -23,6 +23,7 @@ namespace Book_Store_Memoir.Models
         public double? Price { get; set; }
        
         public string? Image{ get; set; }
+        public string? Images { get; set; }
         [Required(ErrorMessage = "Vui lòng chọn nhà xuất bản!!!")]
         public int? PublisherId { get; set; }
         [ForeignKey("Publisher_Id")]
