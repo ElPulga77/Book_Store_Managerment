@@ -68,10 +68,10 @@
                         {
                             <tr>
                                 <td>@item.Id</td>
-                                <td>@item.CreatedAt.ToShortDateString()</td>
-                                <td>@item.ReceiptDetails.First().TotalAmount.Value.ToString("#,##0") VND</td>
+                                <td>@item.OrderDate.Value.ToShortDateString()</td>
+                                <td>@item.TotalAmount.Value.ToString("#,##0") VNĐ</td>
 
-                                <td>@item.Orders.OrderStatus.Status</td>
+                                <td>@item.OrderStatus.Status</td>
                                 <td>
                                     @*<a href="@Url.Action("ViewOrder", "Order", new { orderId = item.Id })" class="btn btn-success">Xem Đơn Hàng</a>*@
                                     <a class="btn btn-success" asp-action="YourOrder" asp-route-id="@item.Id">Xem đơn hàng</a>

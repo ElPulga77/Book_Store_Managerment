@@ -18,14 +18,25 @@ namespace Book_Store_Memoir.Areas.Admin.Controllers
             _db = db;
             _notyfService = notyfService;
         }
-        public IActionResult Index()
+        public IActionResult Index(int statusID)
         {
+            ViewBag.DSTT = new SelectList(_db.OrderStatus.ToList(), "Id", "Status");
+
             if (HttpContext.Session.GetString("AdminName") == null)
             {
                 return RedirectToAction("Index", "AdminLogin");
             }
-            var order = _db.Orders.Include(p => p.Customers).Include(p => p.OrderStatus);
-            return View(order.ToList());
+            IEnumerable<Orders> items = _db.Orders.Include(p => p.OrderStatus);
+
+
+
+            if (statusID != 0)
+            {
+                items = _db.Orders.Include(p=>p.OrderStatus).Include(p=>p.Customers).AsNoTracking().Where(x => x.OrderStatusId == statusID);
+            }
+
+
+            return View(items);
         }
         public async Task<IActionResult> Details(int? id)
         {
@@ -76,16 +87,34 @@ namespace Book_Store_Memoir.Areas.Admin.Controllers
             // Redirect hoặc trả về kết quả
             return RedirectToAction("Details", new { id = order.Id });
         }*/
-        public IActionResult ConfirmOrder(Orders x, int id)
+        public IActionResult ConfirmOrder(Orders x, int id )
         {
             Orders hv = _db.Orders.Find(x.Id);
+            OrderDetails dt = _db.OrderDetails.FirstOrDefault(x => x.OrdersId == id);
+            Book book = _db.Books.Find(x.BookId);
             if (hv != null)
             {
-               if(hv.OrderStatusId == 1)
+               
+                if (hv.OrderStatusId == 1)
                 {
-                    hv.OrderStatusId = 2;
+                    hv.OrderStatusId = 2;        
                     _db.Orders.Update(hv);
                     _db.SaveChanges();
+                    List<OrderDetails> orderDetailsList = _db.OrderDetails.Where(od => od.OrdersId == id).ToList();
+                    foreach (var orderDetail in orderDetailsList)
+                    {
+                        Book bookToUpdate = _db.Books.Find(orderDetail.BookId);
+                        if (bookToUpdate != null)
+                        {
+                            // Giảm Quantity tương ứng trong Book
+                            bookToUpdate.Quantity -= orderDetail.Quantity;
+
+                            // Cập nhật lại trong cơ sở dữ liệu
+                            _db.Books.Update(bookToUpdate);
+                        }
+                    }
+                    _db.SaveChanges();
+                    _notyfService.Success("Đơn hàng đã được xác nhận!!!");
                     return RedirectToAction("Index");
                 }
                 else if (hv.OrderStatusId == 5)

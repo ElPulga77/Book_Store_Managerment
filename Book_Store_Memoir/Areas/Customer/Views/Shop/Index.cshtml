@@ -12,145 +12,162 @@
                     <i class="fa fa-fw fa-search text-white"></i>
                 </button>
             </div>
-        </form>
+        </form>       
     </div>
 </div>
 
-    <!-- Start Content -->
-    <div class="container py-5">
-        <div class="row">
+<!-- Start Content -->
+<div class="container py-5">
+    <div class="row">
 
-            <div class="col-lg-3">
-                <h1 class="h2 pb-4">Thể loại</h1>
-            <form method="get" id="myForm">
-                <div class="form-group">
-                    <select class="form-control" id="catID" name="catID" asp-items="ViewBag.DSTL" onchange="submitForm()">
-                        <option value="" disable selected>Chọn thể loại</option>
-                    </select>
-                </div>
+        <div class="col-lg-3">
+            <h1 class="h2 pb-4">Lọc sản phẩm</h1>
+            @*   <form method="get" id="myForm">
+            <div class="form-group">
+            <select class="form-control" id="catID" name="catID" asp-items="ViewBag.DSTL" onchange="submitForm()">
+            <option value="" disable selected>Chọn thể loại</option>
+            </select>
+            </div>
+            </form>*@
+
+            <form method="get" id="myForm" asp-action="FilterBook">
+                <select class="form-control" id="catID" name="categoryId" asp-items="ViewBag.DSTL">
+                    <option value="" disable selected>Chọn thể loại</option>
+                </select>
+                <select class="form-control" id="catID" name="publisherId" asp-items="ViewBag.DSNXB">
+                    <option value="" disable selected>Chọn nhà xuất bản</option>
+                </select>
+                <select class="form-control" id="catID" name="languageId" asp-items="ViewBag.DSNN">
+                    <option value="" disable selected>Chọn ngôn ngữ</option>
+                </select>
+                <br/>
+                <button type="submit" class="btn btn-success">Lọc</button>
             </form>
-            <br/>
-                <ul class="list-unstyled templatemo-accordion">
-                    <li class="pb-3">
-                        <a class="collapsed d-flex justify-content-between h3 text-decoration-none" href="#">
-                            Giá tiền
-                            <i class="fa fa-fw fa-chevron-circle-down mt-1"></i>
-                        </a>
-                        <ul class="collapse show list-unstyled pl-3">
-                            <li><a class="text-decoration-none" href="#">Dưới 100.000 VNĐ</a></li>
-                            <li><a class="text-decoration-none" href="#">Trên 100.000 VNĐ</a></li>
-                        </ul>
-                    </li>
-                    <li class="pb-3">
-                        <a class="collapsed d-flex justify-content-between h3 text-decoration-none" href="#">
-                            Nhà xuất bản
-                            <i class="pull-right fa fa-fw fa-chevron-circle-down mt-1"></i>
-                        </a>
-                        <ul id="collapseTwo" class="collapse list-unstyled pl-3">
-                            <li><a class="text-decoration-none" href="#">Sport</a></li>
-                            <li><a class="text-decoration-none" href="#">Luxury</a></li>
-                        </ul>
-                    </li>
-                    <li class="pb-3">
-                        <a class="collapsed d-flex justify-content-between h3 text-decoration-none" href="#">
-                            Tác giả
-                            <i class="pull-right fa fa-fw fa-chevron-circle-down mt-1"></i>
-                        </a>
-                        <ul id="collapseThree" class="collapse list-unstyled pl-3">
-                            <li><a class="text-decoration-none" href="#">Bag</a></li>
-                            <li><a class="text-decoration-none" href="#">Sweather</a></li>
-                            <li><a class="text-decoration-none" href="#">Sunglass</a></li>
-                        </ul>
-                    </li>
-                </ul>
-              @*  <form action="@Url.Action("FilterProduct", "Shop")" method="get" id="myForm" name="filter">
-                    <div class="form-group">
-                        <select class="form-control" id="catID" name="filter" asp-items="ViewBag.DSTL" onchange="submitForm()">
-                            <option value="" disabled selected>Chọn thể loại</option>
-                        </select>
-                    </div>
-                </form>*@
-         @*
+
+  
+
+            <br />
+           @* <ul class="list-unstyled templatemo-accordion">
+                <li class="pb-3">
+                    <a class="collapsed d-flex justify-content-between h3 text-decoration-none" href="#">
+                        Giá tiền
+                        <i class="fa fa-fw fa-chevron-circle-down mt-1"></i>
+                    </a>
+                    <ul class="collapse show list-unstyled pl-3">
+                        <li><a class="text-decoration-none" href="#">Dưới 100.000 VNĐ</a></li>
+                        <li><a class="text-decoration-none" href="#">Trên 100.000 VNĐ</a></li>
+                    </ul>
+                </li>
+                <li class="pb-3">
+                    <a class="collapsed d-flex justify-content-between h3 text-decoration-none" href="#">
+                        Nhà xuất bản
+                        <i class="pull-right fa fa-fw fa-chevron-circle-down mt-1"></i>
+                    </a>
+                    <ul id="collapseTwo" class="collapse list-unstyled pl-3">
+                        <li><a class="text-decoration-none" href="#">Sport</a></li>
+                        <li><a class="text-decoration-none" href="#">Luxury</a></li>
+                    </ul>
+                </li>
+                <li class="pb-3">
+                    <a class="collapsed d-flex justify-content-between h3 text-decoration-none" href="#">
+                        Tác giả
+                        <i class="pull-right fa fa-fw fa-chevron-circle-down mt-1"></i>
+                    </a>
+                    <ul id="collapseThree" class="collapse list-unstyled pl-3">
+                        <li><a class="text-decoration-none" href="#">Bag</a></li>
+                        <li><a class="text-decoration-none" href="#">Sweather</a></li>
+                        <li><a class="text-decoration-none" href="#">Sunglass</a></li>
+                    </ul>
+                </li>
+            </ul>*@
+            @*  <form action="@Url.Action("FilterProduct", "Shop")" method="get" id="myForm" name="filter">
+            <div class="form-group">
+            <select class="form-control" id="catID" name="filter" asp-items="ViewBag.DSTL" onchange="submitForm()">
+            <option value="" disabled selected>Chọn thể loại</option>
+            </select>
+            </div>
+            </form>*@
+            @*
             <h1 class="h2 pb-4">Nhà xuất bản</h1>
             <form method="get" id="myForm">
-                <div class="form-group">
-                    <select class="form-control" id="catID" name="catID" asp-items="ViewBag.DSTL" onchange="submitForm()">
-                        <option value="" disable selected>Nhà xuất bản</option>
-                    </select>
-                </div>
+            <div class="form-group">
+            <select class="form-control" id="catID" name="catID" asp-items="ViewBag.DSTL" onchange="submitForm()">
+            <option value="" disable selected>Nhà xuất bản</option>
+            </select>
+            </div>
             </form>*@
-           
-            </div>
-
-            <div class="col-lg-9">
-                <div class="row">
-                    @*<h2>Tìm thấy 2 sản phẩm</h2>*@
-                </div>
-                
-           
-                <div class="row">
-
-                    @foreach (var item in Model)
-                    {
-                        <div class="col-md-4">
-                            <div class="card mb-4 product-wap rounded-0">
-                                <div class="card rounded-0">
-                                    <img class="card-img rounded-0 img-fluid" src="~/image/sanpham/@item.Image">
-                                    <div class="card-img-overlay rounded-0 product-overlay d-flex align-items-center justify-content-center">
-                                        <ul class="list-unstyled">
-
-                                            <li><a class="btn btn-success text-white mt-2" asp-action="Details" asp-route-id="@item.Id"><i class="far fa-eye"></i></a></li>
-
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="card-body">
-                                    <a href="shop-single.html" class="h3 text-decoration-none">@item.Title</a>
-
-
-                                    <p class="text-center mb-0">@item.Price.Value.ToString("#,##0") VNĐ</p>
-                                </div>
-                            </div>
-                        </div>
-                    }
-                </div>
-            <div class="row">
-                <ul class="pagination pagination-lg justify-content-end">
-                    @for (int i = 1; i <= (int)ViewData["TotalPages"]; i++)
-                    {
-                        <li class="page-item @(i == (int)ViewData["CurrentPage"] ? "disabled" : "")">
-                            <a class="page-link rounded-0 mr-3 shadow-sm border-top-0 border-left-0 text-dark"
-                               href="@Url.Action("Index", new { page = i })">@i</a>
-                        </li>
-                    }
-                </ul>
-            </div>
-            </div>
 
         </div>
+
+        <div class="col-lg-9">
+            <div class="row">
+            @*<h2>Tìm thấy 2 sản phẩm</h2>*@
+            </div>
+
+
+            <div class="row">
+
+            @foreach (var item in Model)
+            {
+                <div class="col-md-4">
+                    <div class="card mb-4 product-wap rounded-0">
+                        <div class="card rounded-0">
+                            <img class="card-img rounded-0 img-fluid" src="~/image/sanpham/@item.Image">
+                            <div class="card-img-overlay rounded-0 product-overlay d-flex align-items-center justify-content-center">
+                                <ul class="list-unstyled">
+
+                                    <li><a class="btn btn-success text-white mt-2" asp-action="Details" asp-route-id="@item.Id"><i class="far fa-eye"></i></a></li>
+
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <a href="shop-single.html" class="h3 text-decoration-none">@item.Title</a>
+
+
+                            <p class="text-center mb-0">@item.Price.Value.ToString("#,##0") VNĐ</p>
+                        </div>
+                    </div>
+                </div>
+            }
+            </div>
+            <div class="row">
+                <ul class="pagination pagination-lg justify-content-end">
+            @for (int i = 1; i <= (int)ViewData["TotalPages"]; i++)
+            {
+                    <li class="page-item @(i == (int)ViewData["CurrentPage"] ? "disabled" : "")">
+                        <a class="page-link rounded-0 mr-3 shadow-sm border-top-0 border-left-0 text-dark"
+                           href="@Url.Action("Index", new { page = i })">@i</a>
+                    </li>
+            }
+                </ul>
+            </div>
+        </div>
+
     </div>
-    <style>
-        .card-body a {
-            display: block;
-            height: 3em; /* Đặt kích thước cố định cho Title */
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+</div>
+<style>
+    .card-body a {
+        display: block;
+        height: 3em; /* Đặt kích thước cố định cho Title */
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 
-        .card-body a {
-            display: block;
-            height: 3em; /* Đặt kích thước cố định cho Title */
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+    .card-body a {
+        display: block;
+        height: 3em; /* Đặt kích thước cố định cho Title */
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 
-    </style>
-    <script src="assets/js/jquery-1.11.0.min.js"></script>
-    <script src="assets/js/jquery-migrate-1.2.1.min.js"></script>
-    <script src="assets/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/js/templatemo.js"></script>
-    <script src="assets/js/custom.js"></script>
-    <!-- End Script -->
+</style>
+<script src="assets/js/jquery-1.11.0.min.js"></script>
+<script src="assets/js/jquery-migrate-1.2.1.min.js"></script>
+<script src="assets/js/bootstrap.bundle.min.js"></script>
+<script src="assets/js/templatemo.js"></script>
+<script src="assets/js/custom.js"></script>
+<!-- End Script -->
 
 
 

@@ -39,5 +39,42 @@ namespace Book_Store_Memoir.Areas.Admin.Controllers
             }
             return RedirectToAction("Index");
         }
+        public IActionResult Edit(int id)
+        {
+            var pub = _db.Publisher.Find(id);
+            return View(pub);   
+        }
+        [HttpPost]
+        public IActionResult Edit(Publisher pub)
+        {
+            if(ModelState.IsValid)
+            {
+                _db.Publisher.Update(pub);
+                _db.SaveChanges();
+                _notyfService.Success("Cập nhật thành công!!!!");
+                return RedirectToAction("Index");
+            }    
+            return RedirectToAction("Index");   
+        }
+        public IActionResult Delete(int id)
+        {
+            int dem = _db.Books.Where(a => a.PublisherId == id).ToList().Count;
+            ViewBag.flag = dem;
+            if (dem > 0)
+            {
+                Publisher pub = _db.Publisher.FirstOrDefault(x => x.Id == id);
+                _notyfService.Error("Không thể xóa nhà xuất bản này!!!!");
+                return View(pub);
+            }
+            else
+            {
+                Publisher pub = _db.Publisher.FirstOrDefault(x => x.Id == id);
+                _db.Remove(pub);
+                _db.SaveChanges();
+                _notyfService.Success("Nhà xuất bản đã bị xóa!!");
+                
+            }
+            return RedirectToAction("Index");
+        }
     }
 }

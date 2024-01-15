@@ -1,0 +1,73 @@
+﻿@model IEnumerable<Book_Store_Memoir.Models.Models.Coupon>
+
+@{
+    ViewData["Title"] = "Index";
+
+}
+
+<div class="page-header">
+
+    <div class="header-sub-title">
+        <nav class="breadcrumb breadcrumb-dash">
+            <a asp-area="" asp-controller="" asp-action="" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Home</a>
+            <span class="breadcrumb-item active">Mã khuyến mãi: </span>
+        </nav>
+    </div>
+</div>
+
+<div class="row m-b-30">
+    <div class="col-lg-8">
+        <div class="d-md-flex">
+            <div class="m-b-10 m-r-15">
+            </div>
+
+        </div>
+    </div>
+    <div class="col-lg-4 text-right">
+        <a class="btn btn-primary" asp-controller="Coupon" asp-action="Create">
+            <i class="anticon anticon-plus-circle m-r-5"></i>
+            <span>Thêm mới</span>
+        </a>
+
+    </div>
+</div>
+
+<table class="table table-hover e-commerce-table">
+    <thead>
+        <tr>
+            <th>Mã khuyến mãi</th>
+            <th>Tên chương trình khuyến mãi</th>
+            <th>Ngày bắt đầu</th>
+            <th>Ngày kết thúc</th>
+            <th>Phần trăm khuyến mãi</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null)
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.CouponName</td>
+                    <td>@item.StarDate.ToShortDateString()</td>
+                    <td>@item.EndDate.ToShortDateString()</td>
+                    <td>@item.CouponPercentage %</td>
+
+
+                    <td>
+                        <a class="btn btn-primary btn-tone m-r-5" asp-area="Admin" asp-controller="Coupon" asp-action="Details" asp-route-id="@item.Id">View</a>
+                        <a class="btn btn-secondary btn-tone m-r-5" asp-controller="Coupon" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                        <a class="btn btn-success btn-tone m-r-5" asp-area="Admin" asp-controller="Coupon" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+
+
+                    </td>
+
+                </tr>
+            }
+        }
+
+    </tbody>
+</table>
+

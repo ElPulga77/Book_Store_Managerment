@@ -1,23 +1,13 @@
 ﻿@using Book_Store_Memoir.Models.Models;
-@model Book_Store_Memoir.Models.Models.DeliveryReceipt
+@model Book_Store_Memoir.Models.Models.Orders
 
 @{
     ViewData["Title"] = "Chi tiết đơn hàng của bạn";
 
-    List<ReceiptDetails> orderChitiets = ViewBag.ChiTiet;
+    List<OrderDetails> orderChitiets = ViewBag.ChiTiet;
 
 }
 
-<div class="page-header">
-    <h2 class="header-title"></h2>
-    <div class="header-sub-title">
-        <nav class="breadcrumb breadcrumb-dash">
-            <a asp-area="Admin" asp-controller="AdminOrders" asp-action="Home" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Trang chủ</a>
-            <a class="breadcrumb-item" asp-area="Admin" asp-controller="AdminOrders" asp-action="Index">Danh sách đơn hàng</a>
-            <span class="breadcrumb-item active">Chỉnh sửa thông tin đơn đặt hàng</span>
-        </nav>
-    </div>
-</div>
 <input type="hidden" asp-for="Id" />
 <div class="container">
     <div class="card">
@@ -27,9 +17,9 @@
                     <div class="col-sm-6">
                         <h3 class="p-l-10 m-t-10">THÔNG TIN ĐƠN HÀNG:</h3>
                         <address class="p-l-10 m-t-10">
-                            <span class="font-weight-semibold text-dark">Họ và Tên:  @Html.DisplayFor(model => model.Orders.RecieverName)</span><br>
-                            <span>Địa chỉ: @Html.DisplayFor(model => model.Orders.Address) </span><br>
-                            <span>Số điện thoại: @Html.DisplayFor(model => model.Orders.PhoneNumber) </span>
+                            <span class="font-weight-semibold text-dark">Họ và Tên:  @Html.DisplayFor(model => model.RecieverName)</span><br>
+                            <span>Địa chỉ: @Html.DisplayFor(model => model.Address) </span><br>
+                            <span>Số điện thoại: @Html.DisplayFor(model => model.PhoneNumber) </span>
                         </address>
                     </div>
                     <div class="col-sm-6">
@@ -40,13 +30,13 @@
                             <div class="float-right">#</div>
                         </div>
                         <div class="text-dark text-uppercase d-inline-block">
-                            <span class="font-weight-semibold text-dark">Ngày đặt hàng : @Html.DisplayFor(model => model.Orders.OrderDate)</span>
+                            <span class="font-weight-semibold text-dark">Ngày đặt hàng : @Html.DisplayFor(model => model.OrderDate)</span>
                         </div>
                         <div class="float-right"></div>
                         <br />
                         <br />
                         <div class="text-dark text-uppercase d-inline-block">
-                            <span class="font-weight-semibold text-dark">Trạng thái đơn hàng : @Html.DisplayFor(model => model.Orders.OrderStatus.Status)</span>
+                            <span class="font-weight-semibold text-dark">Trạng thái đơn hàng : @Html.DisplayFor(model => model.OrderStatus.Status)</span>
                         </div>
                         <div class="float-right"></div>
                     </div>
@@ -79,10 +69,8 @@
 
                                             <td>
                                                 <div class="input-group-prepend">
-                                                    <a asp-action="Minus" asp-route-receiptDetailsId="@item.Id" asp-route-id="@item.DeliveryReceiptId" class="btn btn-outline-primary js-btn-minus" type="button">&minus;</a>
 
-                                                    <input type="text" disabled class="form-control text-center" value="@item.Quantity" style="width: 50px;" placeholder="">
-                                                    <a asp-action="Plus" asp-route-receiptDetailsId="@item.Id" asp-route-id="@item.DeliveryReceiptId" class="btn btn-outline-primary js-btn-minus" type="button">&minus;</a>
+                                                    <input readonly type="text" disabled class="form-control text-center" value="@item.Quantity" style="width: 50px;" placeholder="">
                                                 </div>
                                             </td>
                                             @*<td>@item.Book.Price.Value.ToString("#,##0") VNĐ</td>*@
@@ -101,7 +89,8 @@
                     <div class="row m-t-30 lh-1-8">
                         <div class="col-sm-12">
                             <div class="float-right text-right">
-                                <h3><span class="font-weight-semibold text-dark">Tổng tiền: </span>@Model.ReceiptDetails.First().TotalAmount.ToString() VNĐ</h3>
+                                <h3 style="float:right"><span class="font-weight-semibold text-dark">Tổng tiền: </span>@Model.TotalAmount.Value.ToString("#,##0") VNĐ</h3>
+                                <button class="btn btn-danger" asp-action="CancelOrder" asp-route-id="@Model.Id">Hủy đơn hàng</button>
                             </div>
                         </div>
                     </div>

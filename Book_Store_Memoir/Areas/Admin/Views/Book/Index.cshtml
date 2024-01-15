@@ -38,11 +38,10 @@
             <th>Image</th>
             <th>Title</th>
             <th>Price</th>
-         @*   <th>Tác giả</th>*@
             <th>Thể loại</th>
             <th>Ngôn ngữ</th>
             <th>Nhà xuất bản</th>
-     
+            <th>Số lượng sản phẩm</th>
             
 
         </tr>
@@ -77,8 +76,8 @@
                     <td>@item.Category.Name</td>
                     <td>@item.Language.Language_Name</td>
                     <td>@item.Publisher.Name</td>
-                    
-                    
+
+                    <td>@item.Quantity</td>
                     <td>
                         <a class="btn btn-primary btn-tone m-r-5" asp-area="Admin" asp-controller="Book" asp-action="Details" asp-route-id="@item.Id">View</a>
                         <a class="btn btn-secondary btn-tone m-r-5" asp-area="Admin" asp-controller="Book" asp-action="Edit" asp-route-id="@item.Id">Edit</a>

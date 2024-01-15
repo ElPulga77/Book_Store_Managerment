@@ -32,7 +32,7 @@ namespace Book_Store_Memoir.Areas.Customer.Controllers
                 // Xử lý khi user là null, có thể gán một giá trị mặc định hoặc làm gì đó tương ứng
                 ViewBag.DuyNe = "";
             }
-            var dh = _db.Orders.Include(p => p.OrderStatus).Where(p => p.CustomersCustomerId == id);
+            var dh = _db.Orders.Include(p => p.OrderStatus).ThenInclude(a=>a.Orders).ThenInclude(a=>a.DeliveryReceipts).Where(p => p.CustomersCustomerId == id);
             var dh1 = _db.DeliveryReceipts.Include(p => p.Orders).ThenInclude(a=>a.OrderStatus).Where(x => x.Orders.CustomersCustomerId == id);
             var dh2 = _db.DeliveryReceipts.Include(p=>p.ReceiptDetails).Include(p=>p.Orders).ThenInclude(a => a.OrderStatus).Where(x => x.Orders.CustomersCustomerId == id);
             // Lấy thông tin người dùng từ phiên
@@ -50,22 +50,47 @@ namespace Book_Store_Memoir.Areas.Customer.Controllers
                     Phone = user.Phone,
                     Email = user.Email,
                     Address = user.Address,
-                    YourOrder = dh2.ToList(),                  
+                    YourOrder = dh.ToList(),                  
                 });
         }
         public IActionResult YourOrder(int id)
         {
-            var receipt = _db.DeliveryReceipts.Include(p => p.Orders)
-                .ThenInclude(o => o.Customers)
-                        .ThenInclude(o => o.Orders).ThenInclude(e => e.OrderStatus)
-                .Include(p => p.Shipper)
+            var receipt = _db.Orders.Include(p => p.Customers).Include(p=>p.OrderStatus)               
                 .FirstOrDefault(m => m.Id == id);
-            var Chitietdonhang = _db.ReceiptDetails
-                .Include(x => x.Book)
-                .Where(x => x.DeliveryReceiptId == id)
-                .OrderBy(x => x.Id);
+            var Chitietdonhang = _db.OrderDetails
+              .Include(x => x.Book)
+              .Where(x => x.OrdersId == id)
+              .OrderBy(x => x.Id);
             ViewBag.ChiTiet = Chitietdonhang.ToList();
             return View(receipt);
+        }
+        public IActionResult CancelOrder( int id)
+        {
+            try
+            {
+                Orders hv = _db.Orders.Find(id);
+                if (hv != null && hv.OrderStatusId == 1)
+                {
+                    hv.OrderStatusId = 5;
+                    _db.Orders.Update(hv);
+                    _db.SaveChanges();
+                    _notyfService.Information("Đơn hàng đã bị hủy!!!");
+                    return RedirectToAction("Details", new { id });
+                }
+                else
+                {
+                    _notyfService.Error("Không thể hủy đơn hàng!!!");
+                    return RedirectToAction("Index");
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                string errorMessage = $"Không thể thực hiện lệnh";
+
+                Console.WriteLine($"Không thể thực hiện lệnh");
+                return RedirectToAction("Index");
+            }
         }
     }
 }

@@ -15,7 +15,7 @@ namespace Book_Store_Memoir.Models.Models
         public Orders()
         {
             CartItems = new List<ShoppingCartVM>();
-           
+            DeliveryReceipts = new HashSet<DeliveryReceipt>();
         }
         public List<ShoppingCartVM> CartItems { get; set; }
         public int Id { get; set; } 
@@ -30,6 +30,8 @@ namespace Book_Store_Memoir.Models.Models
         [ForeignKey("ShipperId")]
         public int? OrderStatusId { get; set; }
         [ForeignKey("OrderStatusId")]
+        public string? CouponId { get; set; }
+        [ForeignKey("CouponId")]
         public string? RecieverName { get; set; }
         public string? PhoneNumber { get; set; }
         public string? Address { get; set; }
@@ -38,6 +40,7 @@ namespace Book_Store_Memoir.Models.Models
         public Customers? Customers { get; set; }
         public Shipper? Shipper { get; set; }
         public OrderStatus? OrderStatus { get; set; }
+        public Coupon? Coupon { get; set; }
         public int? CustomersCustomerId { get; set; }
         public virtual ICollection<DeliveryReceipt> DeliveryReceipts { get; set; }
         public virtual ICollection<OrderDetails> OrderDetails { get; set; }

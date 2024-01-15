@@ -1,0 +1,135 @@
+﻿@using Book_Store_Memoir.Models.Models;
+@model Book_Store_Memoir.Models.Models.DeliveryReceipt
+
+@{
+    ViewData["Title"] = "Chi tiết phiếu gia hàng" + Model.Id;
+
+    List<ReceiptDetails> Chitietphieugiao = ViewBag.ChiTiet;
+
+}
+<div class="page-header">
+    <h2 class="header-title"></h2>
+    <div class="header-sub-title">
+        <nav class="breadcrumb breadcrumb-dash">
+            <a asp-area="Admin" asp-controller="AdminOrders" asp-action="Home" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Trang chủ</a>
+            <a class="breadcrumb-item" asp-area="Admin" asp-controller="AdminOrders" asp-action="Index">Danh sách đơn hàng</a>
+            <span class="breadcrumb-item active">Chi tiết đơn hàng</span>
+        </nav>
+    </div>
+</div>
+<input type="hidden" asp-for="Id" />
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            <div id="invoice" class="p-h-30">
+                <div class="row m-t-20 lh-2">
+                    <div class="col-sm-6">
+                        <h3 class="p-l-10 m-t-10">THÔNG TIN ĐƠN HÀNG:</h3>
+                        <address class="p-l-10 m-t-10">
+                            <span class="font-weight-semibold text-dark">Người nhận hàng:  @Html.DisplayFor(model => model.Orders.RecieverName)</span><br>
+                            <span>Địa chỉ giao hàng: @Html.DisplayFor(model => model.Orders.Address) </span><br>
+                            <span>Số điện thoại: @Html.DisplayFor(model => model.Orders.PhoneNumber) </span>
+                        </address>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="m-t-80">
+                            <div class="text-dark text-uppercase d-inline-block">
+                                <span class="font-weight-semibold text-dark">Mã đơn hàng :  @Html.DisplayFor(model => model.Id)</span>
+                            </div>
+                            <div class="float-right">#</div>
+                        </div>
+                        <div class="text-dark text-uppercase d-inline-block">
+                            <span class="font-weight-semibold text-dark">Ngày đặt hàng : @Html.DisplayFor(model => model.Orders.OrderDate)</span>
+                        </div>
+                        <div class="float-right"></div>
+                        <br />
+                        <br />
+                        <div class="text-dark text-uppercase d-inline-block">
+                            <span class="font-weight-semibold text-dark">Trạng thái đơn hàng : </span>
+                        </div>
+                        <div class="float-right"></div>
+                    </div>
+                </div>
+                <div class="m-t-20">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>No.</th>
+                                    <th>Sản phẩm</th>
+                                    <th>Hình ảnh</th>
+                                    <th>Số lượng</th>
+                                    <th>Giá</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Chitietphieugiao != null && Chitietphieugiao.Count() > 0)
+                                {
+                                    int i = 1;
+                                    foreach (var item in Chitietphieugiao)
+                                    {
+
+                                        <tr>
+                                            <th>@i</th>
+                                            <td>@item.Book.Title</td>
+                                            <td><img width="50" height="50" src="~/image/sanpham/@item.Book.Image" /></td>
+
+
+                                            <td>
+                                                @*<div class="input-group-prepend">
+                                        <a asp-action="Minus" asp-route-orderDetailId="@item.Id" asp-route-id="@item.OrdersId" class="btn btn-outline-primary js-btn-minus" type="button">&minus;</a>
+                                        <input type="text" disabled class="form-control text-center" value="@item.Quantity" style="width: 50px;" placeholder="">
+                                        <a asp-action="Plus" asp-route-orderDetailId="@item.Id" asp-route-id="@item.OrdersId" class="btn btn-outline-primary js-btn-minus" type="button">&plus;</a>
+
+                                        </div>*@
+                                                @item.Quantity
+                                            </td>
+                                            <td>@item.Book.Price.Value.ToString("#,##0") VNĐ</td>
+
+
+                                            <td></td>
+                                        </tr>
+                                        i++;
+                                    }
+                                }
+
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row m-t-30 lh-1-8">
+                        <div class="col-sm-12">
+                            <div class="float-right text-right">
+                                <h3><span class="font-weight-semibold text-dark">Tổng tiền: </span>@Model.Orders.TotalAmount.Value.ToString("#,##0") VNĐ</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <form asp-action="ConfirmDeliverys" method="post">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <input type="hidden" asp-for="@Model.Orders.Id" name="idOrders" />
+                            <input type="hidden" asp-for="@Model.Id" name="idDeli" />
+                           @* <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Chọn người giao hàng</label>
+                                        <select class="custom-select" name="ShipperId" asp-for="ShipperId" style="min-width: 200px;" asp-items="ViewBag.DSSP">
+                                            <option value="" selected disabled> Chọn người giao hàng</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+
+                            </div>*@
+                            <button style="float:left" type="submit" class="btn btn-success">Đã giao hàng</button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+

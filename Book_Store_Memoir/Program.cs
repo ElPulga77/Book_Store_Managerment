@@ -17,6 +17,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlSer
 (builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<CategoryReponsitory>();
 builder.Services.AddScoped<BookReponsitory>();
+builder.Services.AddTransient<BookReponsitory>();
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30); // Đặt thời gian sống phiên 30 phút

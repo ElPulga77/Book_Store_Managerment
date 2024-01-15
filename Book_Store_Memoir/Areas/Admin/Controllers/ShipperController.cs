@@ -1,6 +1,7 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
 using Book_Store_Memoir.Data;
 using Book_Store_Memoir.Models.Models;
+using Book_Store_Memoir.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.Internal;
@@ -23,6 +24,15 @@ namespace Book_Store_Memoir.Areas.Admin.Controllers
             {
                 _notyfService.Error("Tài khoản của bạn không có quyền truy cập chức năng này!!!!");
                 return RedirectToAction("Index", "AdminLogin");
+            }
+            var shipper = HttpContext.Session.GetObject<Shipper>("Shipper");
+            if (shipper != null)
+            {
+                ViewBag.Shipper = shipper.Id;
+            }
+            else
+            {
+                ViewBag.Shipper = null;
             }
             var dh = _db.DeliveryReceipts.Include(p => p.Orders).ThenInclude(x => x.OrderStatus).Where(p => p.ShipperId == id);
             return View(dh);

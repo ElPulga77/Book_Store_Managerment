@@ -11,7 +11,7 @@ namespace Book_Store_Memoir.Models.Models
     [NotMapped]
     public class CustomerInfo
     {
-        public List<DeliveryReceipt> YourOrder { get; set; }
+        public List<Orders> YourOrder { get; set; }
         public string Cusname { get; set; }
         public string Phone { get; set; }
         public string Email { get; set; }

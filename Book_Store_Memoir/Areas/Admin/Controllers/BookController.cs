@@ -97,13 +97,22 @@ namespace Book_Store_Memoir.Areas.Admin.Controllers
                 _bookReponsitory.AddBook(book);
                 if (Authors != null && Authors.Any())
                 {
-                    foreach (var authorId in Authors)
+                    /*foreach (var authorId in Authors)
                     {
                         var bookAuthor = new BookAuthor { BookId = book.Id, AuthorId = authorId };
                         _db.BookAuthors.Add(bookAuthor);
                         _db.SaveChanges();
                         return RedirectToAction("Index");
+                    }*/
+                    foreach (var authorId in Authors)
+                    {
+                        var bookAuthor = new BookAuthor { BookId = book.Id, AuthorId = authorId };
+                        _db.BookAuthors.Add(bookAuthor);
+                        _db.SaveChanges();
+                      
+
                     }
+                    return RedirectToAction("Index");
                 }
             }
             ViewBag.DSTL = new SelectList(_db.Categories.ToList(), "Id", "Name");
@@ -144,23 +153,33 @@ namespace Book_Store_Memoir.Areas.Admin.Controllers
         }
         public IActionResult Delete(int id)
         {
-            var book = _db.Books.Find(id);
-            if (book != null)
+            try
             {
-                if (!string.IsNullOrEmpty(book.Image))
+                var book = _db.Books.Find(id);
+                if (book != null)
                 {
-                    string imagePath = Path.Combine(_environment.WebRootPath, @"image\sanpham", book.Image);
-
-                    if (System.IO.File.Exists(imagePath))
+                    if (!string.IsNullOrEmpty(book.Image))
                     {
-                        System.IO.File.Delete(imagePath);
+                        string imagePath = Path.Combine(_environment.WebRootPath, @"image\sanpham", book.Image);
+
+                        if (System.IO.File.Exists(imagePath))
+                        {
+                            System.IO.File.Delete(imagePath);
+                        }
                     }
+                    var dsTacgia = _db.BookAuthors.Where(ba => ba.BookId == book.Id);
+                    _db.BookAuthors.RemoveRange(dsTacgia);
+                    _db.Books.Remove(book);
+                    _db.SaveChanges();
+                    _notyfService.Success("Sản phẩm đã được xóa khỏi hệ thống!!!");
                 }
-                _db.Books.Remove(book);
-                _db.SaveChanges();
-                _notyfService.Success("Sản phẩm đã được xóa khỏi hệ thống!!!");
+                return RedirectToAction("Index");
             }
-            return RedirectToAction("Index");
+            catch(Exception ex)
+            {
+                _notyfService.Error("Không thể xóa sản phẩm này!!!");
+                return RedirectToAction("Index");
+            }
         }
         public IActionResult Edit(int id)
         {
@@ -206,11 +225,14 @@ namespace Book_Store_Memoir.Areas.Admin.Controllers
                 _db.SaveChanges();
                 if (Authors != null && Authors.Any())
                 {
+                    var dsTacgia = _db.BookAuthors.Where(ba => ba.BookId == book.Id);
+                    _db.BookAuthors.RemoveRange(dsTacgia);
                     foreach (var authorId in Authors)
                     {
                         var bookAuthor = new BookAuthor { BookId = book.Id, AuthorId = authorId };
                         _db.BookAuthors.Add(bookAuthor);
                         _db.SaveChanges();
+                        _notyfService.Success("Cập nhật thông tin sách thành công!!");
                     }
                 }
 

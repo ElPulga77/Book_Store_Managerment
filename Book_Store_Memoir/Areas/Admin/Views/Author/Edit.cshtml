@@ -1,0 +1,62 @@
+﻿@model Book_Store_Memoir.Models.Author
+
+@{
+    ViewData["Title"] = "Create";
+}
+<form asp-controller="Author" asp-action="Edit" method="post" enctype="multipart/form-data">
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="Image" />
+    <input type="hidden" asp-for="BookAuthors"/>
+    <div class="page-header no-gutters has-tab">
+        <div class="d-md-flex m-b-15 align-items-center justify-content-between">
+            <div class="media align-items-center m-b-15">
+                <div class="m-l-15">
+                    <h4 class="m-b-0">Cập nhật thông tin tác giả</h4>
+                </div>
+            </div>
+            <div class="m-b-15">
+                <button class="btn btn-primary">
+                    <i class="anticon anticon-save"></i>
+                    <span>Cập nhật</span>
+                </button>
+            </div>
+        </div>
+
+    </div>
+    <div class="tab-content m-t-15">
+        <div class="tab-pane fade show active" id="product-edit-basic">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-group">
+                        <label class="font-weight-semibold" for="productName">Tên tác giả</label>
+                        <input asp-for="NameAuhor" class="form-control" />
+                        <span asp-validation-for="NameAuhor" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="font-weight-semibold" for="productName">Ngày sinh</label>
+                        <input asp-for="Birthday" class=" form-control" type="date" />
+                        <span asp-validation-for="Birthday" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="font-weight-semibold" for="productName">Ngày mất</label>
+                        <input asp-for="Death" class="form-control" type="date" />
+                        <span asp-validation-for="Death" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="font-weight-semibold" for="productName">Quê quán</label>
+                        <input asp-for="Hometown" class=" form-control" />
+                        <span asp-validation-for="Hometown" class="text-danger"></span>
+                    </div>
+                    <div class="form-group ">
+                        <label class="font-weight-semibold" for="productBrand">Hình ảnh</label>
+                        <input name="file" type="file" class="form-control-file" asp-for="Image" enctype="multipart/form-data" multiple accept=".jpg, .jpeg, .png, .gif">
+                        <span asp-validation-for="Image" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

@@ -77,6 +77,10 @@
                             <tr>
                                 <td class="text-black font-weight-bold"><strong>Tổng tiền</strong></td>
                                 <td class="text-black font-weight-bold"><strong>@Model.CartItems.First().OrderTotal.ToString("#,##0") VND</strong></td>
+@*                                <td class="text-black font-weight-bold"><strong>@Model.CartItems.First().DeliveryReceipt.TotalAmount</strong></td>
+*@
+
+
                             </tr>
                         </tbody>
                     </table>
@@ -122,3 +126,9 @@
     </div>
 </div>
 <!-- </form> -->
+@*<form asp-action="Checkout" method="post" class="d-flex align-items-center">
+    <div class="col-md-8 mb-3 mb-md-0 d-flex">
+        <input type="text" class="form-control py-3 w-200" name="coupon" placeholder="Mã giảm giá">
+        <button class="btn btn-success btn-sm ml-2">Apply Mã </button>
+    </div>
+</form>*@

@@ -1,5 +1,7 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using Book_Store.DataAccess.Controllers;
 using Book_Store_Memoir.Data;
+using Book_Store_Memoir.DataAccess.Reponsitory;
 using Book_Store_Memoir.Models;
 using Book_Store_Memoir.Models.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -16,14 +18,20 @@ namespace Book_Store_Memoir.Areas.Customer.Controllers
 
         private readonly ApplicationDbContext _db;
         public INotyfService _notyfService { get; }
-        public ShopController(ApplicationDbContext db, INotyfService notyfService)
+        private readonly BookReponsitory _bookReponsitory;
+
+        public ShopController(ApplicationDbContext db, INotyfService notyfService, BookReponsitory bookReponsitory)
         {
             _db = db;
-            _notyfService = notyfService;   
+            _notyfService = notyfService;
+            _bookReponsitory = bookReponsitory;
+
         }
-        public IActionResult Index(int catID, string Search, int page=1 )
+        public IActionResult Index(int catID, string Search, int page = 1)
         {
             ViewBag.DSTL = new SelectList(_db.Categories.ToList(), "Id", "Name");
+            ViewBag.DSNXB = new SelectList(_db.Publisher.ToList(), "Id", "Name");
+            ViewBag.DSNN = new SelectList(_db.Languages.ToList(), "Id", "Language_Name");
             int pageSize = 9;
             string userName = HttpContext.Session.GetString("UserName");
             ViewBag.UserName = userName;
@@ -36,7 +44,7 @@ namespace Book_Store_Memoir.Areas.Customer.Controllers
             // Truyền số trang, danh sách sản phẩm và tổng số trang vào view
             ViewData["CurrentPage"] = page;
             ViewData["TotalPages"] = totalPages;
-            if(productsForPage!=null)
+            if (productsForPage != null)
             {
                 if (!string.IsNullOrEmpty(Search) && catID != 0)
                 {
@@ -52,13 +60,14 @@ namespace Book_Store_Memoir.Areas.Customer.Controllers
                 {
                     productsForPage = _db.Books.AsNoTracking().Where(x => x.Category_Id == catID);
                 }
+
             }
             else
             {
                 _notyfService.Error("Không tìm thấy sản phẩm nào!!!!");
             }
             return View(productsForPage);
-            
+
         }
         public IActionResult Details(int id)
         {
@@ -67,9 +76,23 @@ namespace Book_Store_Memoir.Areas.Customer.Controllers
 
             return View(dsSanPham);
         }
-
-        public IActionResult Cart(int id, int sl)
+        public IActionResult PlusSP(int BookId, int sl)
         {
+            var book = _db.Books.Find(BookId);
+            if (book != null && sl < book.Quantity)
+            {
+                
+            }
+            else
+            {
+                _notyfService.Error("Số lượng sản phẩm không đủ!!!!");
+            }
+            return RedirectToAction();
+        }
+        public IActionResult Cart(int id, int sl, string coupon)
+        {
+
+            var giamgia = _db.Coupons.Find(coupon);
             Orders gh = MySessions.Get<Orders>(HttpContext.Session, "GioHang");
             if (gh == null)
             {
@@ -98,13 +121,23 @@ namespace Book_Store_Memoir.Areas.Customer.Controllers
                     gh.CartItems.Add(item);
                 }
             }
+            // Tính tổng tiền
+            // Tính tổng tiền
 
-            // Tính tổng tiền
-            // Tính tổng tiền
             decimal totalAmount = 0;
             foreach (var item in gh.CartItems)
             {
-                totalAmount += (decimal)(item.Book.Price * item.Quantity);
+                if (coupon == null)
+                {
+                    totalAmount += (decimal)(item.Book.Price * item.Quantity);
+                }
+                else
+                {
+
+                    decimal phantramgiamgia = (decimal)giamgia.CouponPercentage / 100;
+                    decimal sotienduocgiam = (decimal)(item.Book.Price * item.Quantity) * phantramgiamgia;
+                    totalAmount += (decimal)(item.Book.Price * item.Quantity) - sotienduocgiam;
+                }
             }
 
 
@@ -121,22 +154,28 @@ namespace Book_Store_Memoir.Areas.Customer.Controllers
             MySessions.Set(HttpContext.Session, "GioHang", gh);
             /*_notyfService.Success("Đã thêm sản phẩm vào giỏ hàng!!");*/
             return View(gh);
+
+
         }
 
 
         public IActionResult Plus(int cartId)
         {
             Orders gh = MySessions.Get<Orders>(HttpContext.Session, "GioHang");
-
+            var book = _db.Books.Find(cartId);
             if (gh != null)
             {
-                
+
                 ShoppingCartVM existingItem = gh.CartItems.FirstOrDefault(item => item.Book.Id == cartId);
 
-                if (existingItem != null)
+                if (existingItem != null && gh.CartItems.First().Quantity < book.Quantity)
                 {
                     existingItem.Quantity++; // Tăng số lượng sản phẩm lên 1 đơn vị
                     MySessions.Set(HttpContext.Session, "GioHang", gh);
+                }
+                else
+                {
+                    _notyfService.Error("Số lượng sản phẩm không đủ!!!!");
                 }
             }
 
@@ -155,13 +194,13 @@ namespace Book_Store_Memoir.Areas.Customer.Controllers
                     if (existingItem.Quantity > 1)
                     {
                         existingItem.Quantity--; // Giảm số lượng sản phẩm xuống 1 đơn vị, đảm bảo số lượng không nhỏ hơn 1
-                        
+
                         MySessions.Set(HttpContext.Session, "GioHang", gh);
                     }
                     else
                     {
                         _notyfService.Error("Số lượng không được bé hơn 1!!");
-                    }    
+                    }
                 }
             }
 
@@ -187,7 +226,7 @@ namespace Book_Store_Memoir.Areas.Customer.Controllers
         }
         public IActionResult Checkout()
         {
-          if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 if (HttpContext.Session.GetString("UserName") == null)
                 {
@@ -207,13 +246,16 @@ namespace Book_Store_Memoir.Areas.Customer.Controllers
                     }
 
                     decimal totalAmount = 0;
+                    int cout = 0;
                     foreach (var item in gh.CartItems)
                     {
-                        totalAmount += (decimal)(item.Book.Price * item.Quantity);
+                        totalAmount += (decimal)gh.CartItems.First().OrderTotal;
+                        cout++;
+                        gh.CartItems.First().OrderTotal = (double)totalAmount / cout;
                     }
-                    gh.CartItems.First().OrderTotal = (double)totalAmount;
 
-                        return View("Checkout", new Checkout
+
+                    return View("Checkout", new Checkout
                     {
                         Cusname = user.Name,
                         Phone = user.Phone,
@@ -221,66 +263,77 @@ namespace Book_Store_Memoir.Areas.Customer.Controllers
                         Address = user.Address,
                         PaymentMethod = user.Name,
                         CartItems = gh.CartItems,
-                        TotalAmount = (decimal)gh.CartItems.First().OrderTotal
+                        TotalAmount = totalAmount / 2
                     });
                 }
             }
             return RedirectToAction("Checkout");
-               
+
         }
         [HttpPost]
         public IActionResult CreateOrder(Orders orders, string Cusname, string Address, string Phone)
         {
-       
-                // Lấy thông tin người dùng từ phiên
-                var user = HttpContext.Session.GetObject<Customers>("User");
 
-                // Lấy thông tin giỏ hàng từ phiên (nếu bạn lưu thông tin giỏ hàng trong phiên)
-                var shoppingCart = MySessions.Get<Orders>(HttpContext.Session, "GioHang");
+            // Lấy thông tin người dùng từ phiên
+            var user = HttpContext.Session.GetObject<Customers>("User");
 
-                if (user != null && shoppingCart != null)
+            // Lấy thông tin giỏ hàng từ phiên (nếu bạn lưu thông tin giỏ hàng trong phiên)
+            var shoppingCart = MySessions.Get<Orders>(HttpContext.Session, "GioHang");
+
+            if (user != null && shoppingCart != null)
+            {
+                var order = new Orders
                 {
-                    var order = new Orders
+                    CustomerId = user.CustomerId,
+                    CustomersCustomerId = user.CustomerId,
+                    BookId = shoppingCart.CartItems.First().Book.Id,
+                    Quantity = shoppingCart.Quantity,
+                    TotalAmount = shoppingCart.CartItems.First().OrderTotal,
+                    OrderStatusId = 1,
+                    RecieverName = Cusname,
+                    Address = Address,
+                    PhoneNumber = Phone,
+                    OrderDate = DateTime.Now,
+
+                };
+                _db.Orders.Add(order);
+                _db.SaveChanges();
+                foreach (var cartItem in shoppingCart.CartItems)
+                {
+                    var orderItem = new OrderDetails
                     {
-                        CustomerId = user.CustomerId,
-                        CustomersCustomerId = user.CustomerId,
-                        BookId = shoppingCart.CartItems.First().Book.Id,
-                        Quantity = shoppingCart.Quantity,
-                        TotalAmount = shoppingCart.CartItems.First().OrderTotal,
-                        OrderStatusId = 1,
-                        RecieverName = Cusname,
-                        Address = Address,
-                        PhoneNumber = Phone,
-                        OrderDate = DateTime.Now,
+                        OrdersId = order.Id,
+                        BookId = cartItem.Book.Id,
+                        Quantity = cartItem.Quantity,
+                        TotalAmount = order.TotalAmount,
 
                     };
-                    _db.Orders.Add(order);
-                    _db.SaveChanges();
-                    foreach (var cartItem in shoppingCart.CartItems)
-                    {
-                        var orderItem = new OrderDetails
-                        {
-                            OrdersId = order.Id,
-                            BookId = cartItem.Book.Id,
-                            Quantity = cartItem.Quantity,
-                            TotalAmount = order.TotalAmount,
+                    _db.OrderDetails.Add(orderItem);
 
-                        };
-                        _db.OrderDetails.Add(orderItem);
-
-                    }
-                    _db.SaveChanges();
                 }
+                _db.SaveChanges();
+            }
 
 
 
-                // Xóa thông tin giỏ hàng từ phiên sau khi đã tạo đơn hàng
-                HttpContext.Session.Remove("GioHang");
+            // Xóa thông tin giỏ hàng từ phiên sau khi đã tạo đơn hàng
+            HttpContext.Session.Remove("GioHang");
 
-                // Hiển thị thông báo hoặc trang cảm ơn
-                return View("ThankYou");
+            // Hiển thị thông báo hoặc trang cảm ơn
+            return View("ThankYou");
         }
 
-
+        public IActionResult FilterBook(int categoryId, int publisherId, int languageId)
+        {
+            ViewBag.DSTL = new SelectList(_db.Categories.ToList(), "Id", "Name");
+            ViewBag.DSNXB = new SelectList(_db.Publisher.ToList(), "Id", "Name");
+            ViewBag.DSNN = new SelectList(_db.Languages.ToList(), "Id", "Language_Name");
+            var books = _bookReponsitory.SearchProductById(categoryId, publisherId, languageId);
+            return View(books);
+        }
+        public IActionResult SearchString(string Search)
+        {
+            var book = _bookReponsitory.SearchProduct1(Search); return View(book);
+        }
     }
 }

@@ -4,8 +4,22 @@
     ViewData["Title"] = "Index";
 
 }
-<div class="form-group">
+<div class="page-header">
 
+    <div class="header-sub-title">
+        <nav class="breadcrumb breadcrumb-dash">
+            <a asp-area="Admin" asp-controller="" asp-action="Index" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Home</a>
+            <span class="breadcrumb-item active">Danh sách đơn hàng: </span>
+        </nav>
+    </div>
+</div>
+<div class="form-group">
+    <form method="post" id="myForm">
+        <label>Chọn trạng thái đơn hàng</label>
+        <select class="form-control" id="statusID" name="statusID" asp-items="@ViewBag.DSTT" required onchange="submitForm()">
+            <option value="0" disabled selected>Chọn trạng thái đơn hàng</option>
+        </select>
+    </form>
     @*<form method="post" id="myForm">
         <label>Chọn trạng thái đơn hàng</label>
         <select class="form-control" id="statusID" name="statusID" asp-items="@ViewBag.DSTT" required onchange="submitForm()">
@@ -19,6 +33,12 @@
     <option value="" disable selected>Chọn trạng thái đơn hàng</option>
     </select>
     <button type="submit">Filter</button>
+    </form>*@
+    @*<form method="post" id="myForm">
+        <label>Chọn trạng thái đơn hàng</label>
+        <select class="form-control" id="statusID" name="statusID" asp-items="@ViewBag.DSTT" required onchange="submitForm()">
+            <option value="0" disabled selected>Chọn trạng thái đơn hàng</option>
+        </select>
     </form>*@
     <a class="btn btn-secondary btn-tone m-r-5" asp-area="Admin" asp-controller="Order" asp-action="ListOrderConfirm">Đơn hàng đã xác nhận</a>
 </div>

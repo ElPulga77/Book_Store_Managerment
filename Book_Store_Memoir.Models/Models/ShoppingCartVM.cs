@@ -14,7 +14,8 @@ namespace Book_Store_Memoir.Models.Models
     public class ShoppingCartVM
     {
         public Book Book { get; set; }
-        public int Quantity { get; set; }
+        public DeliveryReceipt DeliveryReceipt { get; set; }
+        public int? Quantity { get; set; }
         public double OrderTotal { get; set; }
     }
 }

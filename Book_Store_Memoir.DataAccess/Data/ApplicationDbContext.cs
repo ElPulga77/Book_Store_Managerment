@@ -25,6 +25,7 @@ namespace Book_Store_Memoir.Data
         public DbSet<OrderStatus> OrderStatus { get; set; }
         public DbSet<DeliveryReceipt> DeliveryReceipts { get; set; }
         public DbSet<ReceiptDetails> ReceiptDetails { get; set; }
+        public DbSet<Coupon> Coupons { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<BookAuthor>()
@@ -55,6 +56,10 @@ namespace Book_Store_Memoir.Data
                 .HasOne(ba => ba.Shipper)
                 .WithMany(a => a.DeliveryReceipts)
                 .HasForeignKey(ba => ba.ShipperId);
+            modelBuilder.Entity<Orders>()
+               .HasOne(ba => ba.Coupon)
+               .WithMany(a => a.Orders)
+               .HasForeignKey(ba => ba.CouponId);
             /*modelBuilder.Entity<ReceiptDetails>()
             .HasKey(dr => new { dr.DeliveryReceiptId, dr.BookId });
 

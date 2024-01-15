@@ -111,7 +111,8 @@
                         <form asp-action="ConfirmOrder" method="post">
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                             <input type="hidden" asp-for="Id" />
-                          
+                            <input type="hidden" asp-for="BookId" />
+
                             <button style="float:left" type="submit" class="btn btn-success">Xác nhận đơn hàng</button>
                         </form>
                         <form asp-action="CancelOrder" >

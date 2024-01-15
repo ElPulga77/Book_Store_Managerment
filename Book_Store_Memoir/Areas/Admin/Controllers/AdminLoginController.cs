@@ -52,6 +52,10 @@ namespace Book_Store_Memoir.Areas.Admin.Controllers
             // Admin is already logged in, redirect to the desired page.
             return RedirectToAction("Index", "Home");
         }
-
+        public ActionResult Logout()
+        {
+            HttpContext.Session.Clear();//remove session
+            return RedirectToAction("Index");
+        }
     }
 }

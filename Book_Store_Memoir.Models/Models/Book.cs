@@ -13,6 +13,7 @@ namespace Book_Store_Memoir.Models
         public string? Title { get; set; }
         [Required(ErrorMessage = "Vui lòng nhập mã tiêu chuẩn!!!")]
         public string? ISBN { get; set; }
+        public int? Quantity { get; set; }
         public DateTime? Publication_Date { get; set; }
         [Required(ErrorMessage = "Vui lòng nhập số trang!!!")]
         public int? PageNumber { get; set; }
@@ -30,7 +31,7 @@ namespace Book_Store_Memoir.Models
         [ForeignKey("Language_Id")]
         [Required(ErrorMessage = "Vui lòng chọn thể loại!!!")]
         public int? Category_Id { get; set; }
-        [ForeignKey("Category_Id")]
+        [ForeignKey("Category_Id")]        
         public virtual Category? Category { get; set; }
         public virtual Publisher? Publisher { get; set; }
         public virtual Language? Language { get; set; }
