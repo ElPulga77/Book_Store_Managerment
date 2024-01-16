@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="wwwroot\image\sanphams\" />
     <Folder Include="wwwroot\image\tacgia\" />
     <Folder Include="wwwroot\image\sanpham\" />
   </ItemGroup>

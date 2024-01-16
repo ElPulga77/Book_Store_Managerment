@@ -1,7 +1,8 @@
-﻿@model Book_Store_Memoir.Models.Book
-
+﻿@model Book_Store_Memoir.Models.Book;
+@using Book_Store_Memoir.Models.Models;
 @{
     ViewData["Title"] = "Details";
+    List<Review> comment = ViewBag.Reviews;
 }
 
 <!DOCTYPE html>
@@ -81,23 +82,20 @@
 
                                 <!--First slide-->
                                 <div class="carousel-item active">
-                                    @*   <div class="row">
-                                    <div class="col-4">
-                                    <a href="#">
-                                    <img class="card-img img-fluid" src="assets/img/product_single_01.jpg" alt="Product Image 1">
-                                    </a>
+                                    <div class="row">
+                                        @if (!string.IsNullOrEmpty(Model.Images))
+                                        {
+                                            var imagePaths = Model.Images.Split(',');
+                                            @foreach (var imagePath in imagePaths)
+                                            {
+                                                <div class="col-4">
+                                                    <a href="#">
+                                                        <img class="card-img img-fluid" src="@Url.Content("~/image/sanphams/" + imagePath)" alt="Product Image 1">
+                                                    </a>
+                                                </div>
+                                            }
+                                        }
                                     </div>
-                                    <div class="col-4">
-                                    <a href="#">
-                                    <img class="card-img img-fluid" src="assets/img/product_single_02.jpg" alt="Product Image 2">
-                                    </a>
-                                    </div>
-                                    <div class="col-4">
-                                    <a href="#">
-                                    <img class="card-img img-fluid" src="assets/img/product_single_03.jpg" alt="Product Image 3">
-                                    </a>
-                                    </div>
-                                    </div>*@
                                 </div>
 
                             </div>
@@ -231,6 +229,49 @@
                             </div>
 
 
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Thêm phần khung bình luận -->
+            <div class="row mt-5">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="h2">Bình luận</h3>
+
+                            <!-- Form bình luận -->
+                            <form asp-controller="Shop" asp-action="AddComment" method="post">
+                                <input type="hidden" name="id" value="@Model.Id" />
+                                @*<input type="hidden" name="idUser" value="@Model." />*@
+                                <!-- Ô nhập bình luận -->
+                                <div class="mb-3">
+                                    <label for="commentText" class="form-label">Bình luận của bạn:</label>
+                                    <textarea class="form-control" id="commentText" name="commentText" rows="3"></textarea>
+                                </div>
+
+                                <!-- Button gửi bình luận -->
+                                <button type="submit" class="btn btn-success">Gửi bình luận</button>
+                            </form>
+                            <div class="mt-4">
+                            @foreach (var item in comment)
+                            {
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <p class="card-subtitle text-muted">Người bình luận: @item.Customers.Name, Thời gian: @item.ReviewDate.Value.ToShortDateString()</p>
+
+                                        <p class="card-text">@item.Comment</p>
+                                    </div>
+                                </div>
+                                
+                                   
+                                
+                            }
+                            </div>
+                            <!-- Hiển thị danh sách bình luận -->
+                            <div class="mt-4">
+                             
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -93,25 +93,25 @@ namespace Book_Store_Memoir.Areas.Admin.Controllers
                     }
                     book.Image = fileName + extention;
                 }
-            
-           /*         List<string> imagePaths = new List<string>();
-                    foreach (var file1 in files)
+
+                List<string> imagePaths = new List<string>();
+                foreach (var file1 in files)
+                {
+                    // Tạo một tên tệp tin mới
+                    string fileNames = Guid.NewGuid().ToString() + Path.GetExtension(file1.FileName);
+                    var uploads1 = Path.Combine(wwwRootPath, @"image\sanphams");
+
+                    using (var fileStream1 = new FileStream(Path.Combine(uploads1, fileNames), FileMode.Create))
                     {
-                        // Tạo một tên tệp tin mới
-                        string fileNames = Guid.NewGuid().ToString() + Path.GetExtension(files.FileName);
-                        var uploads = Path.Combine(wwwRootPath, @"image\sanpham");
-
-                        using (var fileStream = new FileStream(Path.Combine(uploads, fileName), FileMode.Create))
-                        {
-                            file.CopyTo(fileStream);
-                        }
-
-                        // Thêm đường dẫn của hình ảnh mới vào danh sách
-                        imagePaths.Add(fileName);
+                        file1.CopyTo(fileStream1);
                     }
-                    book.Images = string.Join(",", imagePaths);*/
-                
-                    _notyfService.Success("Thêm sản phẩm thành công!!!!");
+
+                    // Thêm đường dẫn của hình ảnh mới vào danh sách
+                    imagePaths.Add(fileNames);
+                }
+                book.Images = string.Join(",", imagePaths);
+
+                _notyfService.Success("Thêm sản phẩm thành công!!!!");
                     _bookReponsitory.AddBook(book);
                     if (Authors != null && Authors.Any())
                     {

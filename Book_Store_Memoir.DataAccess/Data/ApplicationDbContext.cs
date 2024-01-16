@@ -7,7 +7,7 @@ namespace Book_Store_Memoir.Data
 {
     public class ApplicationDbContext : DbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext>options): base(options) 
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
 
         }
@@ -26,6 +26,7 @@ namespace Book_Store_Memoir.Data
         public DbSet<DeliveryReceipt> DeliveryReceipts { get; set; }
         public DbSet<ReceiptDetails> ReceiptDetails { get; set; }
         public DbSet<Coupon> Coupons { get; set; }
+        public DbSet<Review> Reviews { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<BookAuthor>()
@@ -60,6 +61,14 @@ namespace Book_Store_Memoir.Data
                .HasOne(ba => ba.Coupon)
                .WithMany(a => a.Orders)
                .HasForeignKey(ba => ba.CouponId);
+            modelBuilder.Entity<Book>()
+               .HasMany(ba => ba.Reviews)        // Mỗi sản phẩm có nhiều đánh giá
+               .WithOne(a => a.Book)        // Mỗi đánh giá thuộc về một sản phẩm
+               .HasForeignKey(ba => ba.BookId);
+            modelBuilder.Entity<Customers>()
+               .HasMany(ba => ba.Reviews)        // Mỗi sản phẩm có nhiều đánh giá
+               .WithOne(a => a.Customers)        // Mỗi đánh giá thuộc về một người dùng
+               .HasForeignKey(ba => ba.CustomerId);
             /*modelBuilder.Entity<ReceiptDetails>()
             .HasKey(dr => new { dr.DeliveryReceiptId, dr.BookId });
 

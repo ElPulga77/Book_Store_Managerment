@@ -18,6 +18,7 @@ namespace Book_Store_Memoir.Models.Models
         [ForeignKey("Order_Id")]
         public double? TotalAmount { get; set; }
         public int? Quantity { get; set; }   
+        public int? CustomerId { get; set; }
         public Orders? Orders { get; set; }
         public Book? Book { get; set; }
 

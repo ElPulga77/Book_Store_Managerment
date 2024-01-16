@@ -83,8 +83,9 @@ namespace Book_Store_Memoir.Areas.Customer.Controllers
         public IActionResult Details(int id)
         {
             Book product = _db.Books.FirstOrDefault(u => u.Id == id);
-            var dsSanPham = _db.Books.Include(p => p.Category).Include(p => p.Publisher).Include(p => p.Language).Include(p => p.BookAuthors).ThenInclude(ba => ba.Author).FirstOrDefault(u => u.Id == id);
-
+            var dsSanPham = _db.Books.Include(p => p.Category).Include(p => p.Publisher).Include(p => p.Language).Include(p => p.BookAuthors).ThenInclude(ba => ba.Author).Include(p=>p.Reviews).FirstOrDefault(u => u.Id == id);
+            var commnet = _db.Reviews.Include(p=>p.Customers).Where(p=>p.BookId == id);
+            ViewBag.Reviews = commnet.ToList();
             return View(dsSanPham);
         }
         public IActionResult PlusSP(int BookId, int sl)
@@ -317,7 +318,7 @@ namespace Book_Store_Memoir.Areas.Customer.Controllers
                         BookId = cartItem.Book.Id,
                         Quantity = cartItem.Quantity,
                         TotalAmount = order.TotalAmount,
-
+                        CustomerId = order.CustomerId
                     };
                     _db.OrderDetails.Add(orderItem);
 
@@ -346,5 +347,34 @@ namespace Book_Store_Memoir.Areas.Customer.Controllers
         {
             var book = _bookReponsitory.SearchProduct1(Search); return View(book);
         }
+        [HttpPost]
+        public IActionResult AddComment(int id, string commentText)
+        {
+            var user = HttpContext.Session.GetObject<Customers>("User");
+            if (HttpContext.Session.GetString("UserName") == null)
+            {
+                return RedirectToAction("Login1", "UserLogin");
+            }
+            else
+            {
+                bool check = _db.OrderDetails.Include(p => p.Orders).ThenInclude(a => a.Customers)
+                    .Any(p => p.CustomerId == user.CustomerId && p.BookId == id );
+                if(check)
+                {
+                    Review review = new Review();
+                    review.CustomerId = user.CustomerId;
+                    review.BookId = id;
+                    review.Comment = commentText;
+                    review.ReviewDate = DateTime.Now;
+                    _db.Reviews.Add(review);
+                    _db.SaveChanges();
+                }
+                else
+                {
+                    _notyfService.Error("Bạn chưa từng mua sản phẩm này nên không thể đánh giá");
+                }
+            }
+                return RedirectToAction("Details", new {id});
+        }    
     }
 }

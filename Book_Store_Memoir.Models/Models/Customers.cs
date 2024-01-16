@@ -26,5 +26,6 @@ namespace Book_Store_Memoir.Models.Models
         [Required(ErrorMessage = "Bạn chưa nhập Email!!!")]
         public string Email { get; set; }
         public virtual ICollection<Orders> Orders { get; set; }
+        public ICollection<Review>? Reviews { get; set; }
     }
 }

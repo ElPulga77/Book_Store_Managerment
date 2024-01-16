@@ -40,5 +40,6 @@ namespace Book_Store_Memoir.Models
         public ICollection<BookAuthor>? BookAuthors { get; set; }
         [AllowNull]
         public ICollection<ReceiptDetails>? ReceiptDetails { get; set; }
+        public ICollection<Review>? Reviews { get; set; }
     }
 }
